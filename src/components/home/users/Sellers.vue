@@ -1,6 +1,6 @@
 <template>
   <div class="users">
-    <Breadcrumb name1="用户管理" name2="投保人列表" />
+    <Breadcrumb name1="用户管理" name2="用户列表" />
     <!-- 卡片视图区域 -->
     <el-card class="box-card">
       <el-row :gutter="20">
@@ -12,24 +12,31 @@
         </el-col>
         <el-col :span="4">
           <!-- 添加用户区域 -->
-          <el-button type="primary" @click="addDialogVisible = true">添加投保人</el-button>
+          <el-button type="primary" @click="addDialogVisible = true">用户添加</el-button>
         </el-col>
       </el-row>
       <!-- 用户列表 -->
       <el-table :data="userData.userList" stripe style="width: 100%" border>
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column prop="name" label="投保人姓名"></el-table-column>
-        <el-table-column prop="sex" label="性别"></el-table-column>
-        <el-table-column prop="user_num" label="身份证号"></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="username" label="姓名"></el-table-column>
+        <el-table-column prop="email" label="身份证号"></el-table-column>
         <el-table-column prop="mobile" label="电话"></el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
+        <!--        <el-table-column prop="role_name" label="角色"></el-table-column>-->
+        <!--        <el-table-column label="状态">-->
+        <!--          <template v-slot="scope">-->
+        <!--            <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change="userStatuChanged(scope.row)"> </el-switch>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column label="操作" width="180px">
           <template v-slot="scope">
             <!-- 修改按钮 -->
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
             <!-- 删除按钮 -->
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
+            <!-- 分配角色按钮 -->
+            <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRoles(scope.row)"></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -47,26 +54,20 @@
       </el-pagination>
     </el-card>
     <!-- 添加用户对话框 -->
-    <el-dialog title="添加投保人" :visible.sync="addDialogVisible" width="50%" @close="addDislogClosed">
+    <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="addDislogClosed">
       <!-- 内容主题区域 -->
       <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
-        <el-form-item label="投保人姓名" prop="name">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-input v-model="addForm.sex"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证号" prop="user_num">
-          <el-input v-model="addForm.user_num"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="addForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="电话" prop="mobile">
+        <el-form-item label="手机" prop="mobile">
           <el-input v-model="addForm.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="地址" prop="mobile">
-          <el-input v-model="addForm.address"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮区域 -->
@@ -78,19 +79,36 @@
     <!-- 修改用户信息对话框 -->
     <el-dialog title="修改用户" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
       <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="70px">
+        <el-form-item label="用户名">
+          <el-input v-model="editForm.username" disabled></el-input>
+        </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="editForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="电话" prop="mobile">
+        <el-form-item label="手机" prop="mobile">
           <el-input v-model="editForm.mobile"></el-input>
-        </el-form-item>
-        <el-form-item label="地址" prop="mobile">
-          <el-input v-model="editForm.address"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisble = false">取 消</el-button>
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 分配角色 -->
+    <el-dialog title="分配角色" :visible.sync="setRolesDialogVisible" @close="setRolesDialogClosed" width="50%">
+      <div>
+        <p>当前的用户 : {{ userInfo.username }}</p>
+        <p>当前的角色 : {{ userInfo.role_name }}</p>
+        <p>
+          分配新角色:
+          <el-select v-model="selectRoleId" placeholder="请选择">
+            <el-option v-for="item in rolesList" :key="item.id" :label="item.roleName" :value="item.id"> </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRolesDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRolesInfo">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -122,17 +140,19 @@ export default {
       addDialogVisible: false,
       // 添加用户数据的对象
       addForm: {
-        name: '',
-        sex: '',
-        user_num: '',
+        username: '',
+        password: '',
         email: '',
-        mobile: '',
-        address: ''
+        mobile: ''
       },
       // 修改用户消息对话框显示和隐藏
       editDialogVisble: false,
       // 控制分配角色对话框的显示和隐藏
       setRolesDialogVisible: false,
+      // 需要被分配角色的用户信息
+      userInfo: {},
+      // 分配角色列表
+      rolesList: [],
       // 保存已经选中的角色id值
       selectRoleId: '',
       // 查询用户的对象
@@ -147,14 +167,14 @@ export default {
   },
   methods: {
     async getUserList() {
-      const { data: res } = await this.$http.get('manager', {
+      const { data: res } = await this.$http.get('managers', {
         params: this.queryInfo
       })
       if (res.meta.status !== 200) {
         this.$message.error('获取用户列表失败!')
       }
       this.$message.success('获取用户列表成功!')
-      this.userData.userList = res.data.users
+      this.userData.userList = res.data.managers
       this.userData.total = res.data.total
       // console.log(res)
     },
@@ -173,7 +193,7 @@ export default {
     // 监听Switch状态的改变
     async userStatuChanged(userInfo) {
       // console.log(userInfo)
-      const { data: res } = await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
+      const { data: res } = await this.$http.put(`managers/${userInfo.id}/state/${userInfo.mg_state}`)
       if (res.meta.status !== 200) {
         userInfo.mg_state = !userInfo.mg_state
         return this.$message.error('更新用户状态失败!')
@@ -190,7 +210,7 @@ export default {
         console.log(valid)
         if (!valid) return
         // 可以发起添加用户请求
-        const { data: res } = await this.$http.post('user', this.addForm)
+        const { data: res } = await this.$http.post('users', this.addForm)
         if (res.meta.status !== 201) {
           return this.$message.error('用户添加失败了~')
         }

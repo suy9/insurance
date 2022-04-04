@@ -4,8 +4,9 @@ const Login = () => import(/* webpackChunkName: "login_home_welome" */ 'componen
 const Home = () => import(/* webpackChunkName: "login_home_welome" */ 'components/home/Home')
 const Welcome = () => import(/* webpackChunkName: "login_home_welome" */ 'components/home/welcome/Welcome')
 
+const Managers = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Managers')
 const Users = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Users')
-const Rights = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/power/rights/Rights')
+const Sellers = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Sellers')
 const Roles = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/power/roles/Roles')
 
 const Cate = () => import(/* webpackChunkName: "Cate_Params" */ 'components/home/goods/cate/Cate')
@@ -37,12 +38,16 @@ const routes = [
         component: Welcome
       },
       {
+        path: '/managers',
+        component: Managers
+      },
+      {
         path: '/users',
         component: Users
       },
       {
-        path: '/rights',
-        component: Rights
+        path: '/sellers',
+        component: Sellers
       },
       {
         path: '/roles',
