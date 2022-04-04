@@ -18,12 +18,12 @@
       <!-- 用户列表 -->
       <el-table :data="userData.userList" stripe style="width: 100%" border>
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column prop="name" label="投保人姓名"></el-table-column>
-        <el-table-column prop="sex" label="性别"></el-table-column>
+        <el-table-column prop="user_name" label="投保人姓名"></el-table-column>
+        <el-table-column prop="user_sex" label="性别"></el-table-column>
         <el-table-column prop="user_num" label="身份证号"></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
-        <el-table-column prop="mobile" label="电话"></el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
+        <el-table-column prop="user_email" label="邮箱"></el-table-column>
+        <el-table-column prop="user_phone" label="电话"></el-table-column>
+        <el-table-column prop="user_address" label="地址"></el-table-column>
         <el-table-column label="操作" width="180px">
           <template v-slot="scope">
             <!-- 修改按钮 -->
@@ -50,23 +50,23 @@
     <el-dialog title="添加投保人" :visible.sync="addDialogVisible" width="50%" @close="addDislogClosed">
       <!-- 内容主题区域 -->
       <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
-        <el-form-item label="投保人姓名" prop="name">
-          <el-input v-model="addForm.username"></el-input>
+        <el-form-item label="投保人姓名" prop="user_name">
+          <el-input v-model="addForm.user_name"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-input v-model="addForm.sex"></el-input>
+        <el-form-item label="性别" prop="user_sex">
+          <el-input v-model="addForm.user_sex"></el-input>
         </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
           <el-input v-model="addForm.user_num"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="addForm.email"></el-input>
+        <el-form-item label="邮箱" prop="user_email">
+          <el-input v-model="addForm.user_email"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="mobile">
-          <el-input v-model="addForm.mobile"></el-input>
+          <el-input v-model="addForm.user_phone"></el-input>
         </el-form-item>
-        <el-form-item label="地址" prop="mobile">
-          <el-input v-model="addForm.address"></el-input>
+        <el-form-item label="地址" prop="user_address">
+          <el-input v-model="addForm.user_address"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮区域 -->
@@ -78,14 +78,14 @@
     <!-- 修改用户信息对话框 -->
     <el-dialog title="修改用户" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
       <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="70px">
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="editForm.email"></el-input>
+        <el-form-item label="邮箱" prop="user_email">
+          <el-input v-model="editForm.user_email"></el-input>
         </el-form-item>
-        <el-form-item label="电话" prop="mobile">
-          <el-input v-model="editForm.mobile"></el-input>
+        <el-form-item label="电话" prop="user_phone">
+          <el-input v-model="editForm.user_phone"></el-input>
         </el-form-item>
-        <el-form-item label="地址" prop="mobile">
-          <el-input v-model="editForm.address"></el-input>
+        <el-form-item label="地址" prop="user_address">
+          <el-input v-model="editForm.user_address"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -122,12 +122,12 @@ export default {
       addDialogVisible: false,
       // 添加用户数据的对象
       addForm: {
-        name: '',
-        sex: '',
+        user_name: '',
+        user_sex: '',
         user_num: '',
-        email: '',
-        mobile: '',
-        address: ''
+        user_email: '',
+        user_phone: '',
+        user_address: ''
       },
       // 修改用户消息对话框显示和隐藏
       editDialogVisble: false,
@@ -151,9 +151,9 @@ export default {
         params: this.queryInfo
       })
       if (res.meta.status !== 200) {
-        this.$message.error('获取用户列表失败!')
+        this.$message.error('获取投保人列表失败!')
       }
-      this.$message.success('获取用户列表成功!')
+      this.$message.success('获取投保人列表成功!')
       this.userData.userList = res.data.users
       this.userData.total = res.data.total
       // console.log(res)
@@ -170,16 +170,16 @@ export default {
       this.queryInfo.pagenum = newPage
       this.getUserList()
     },
-    // 监听Switch状态的改变
-    async userStatuChanged(userInfo) {
-      // console.log(userInfo)
-      const { data: res } = await this.$http.put(`user/${userInfo.id}/state/${userInfo.mg_state}`)
-      if (res.meta.status !== 200) {
-        userInfo.mg_state = !userInfo.mg_state
-        return this.$message.error('更新用户状态失败!')
-      }
-      return this.$message.success('更新用户状态成功!')
-    },
+    // // 监听Switch状态的改变
+    // async userStatuChanged(userInfo) {
+    //   // console.log(userInfo)
+    //   const { data: res } = await this.$http.put(`user/${userInfo.id}/state/${userInfo.mg_state}`)
+    //   if (res.meta.status !== 200) {
+    //     userInfo.mg_state = !userInfo.mg_state
+    //     return this.$message.error('更新用户状态失败!')
+    //   }
+    //   return this.$message.success('更新用户状态成功!')
+    // },
     // 监听添加用户的对话框关闭事件
     addDislogClosed() {
       this.$refs.addFormRef.resetFields()
@@ -222,8 +222,8 @@ export default {
         if (!valid) return
         // 发起修改用户信息的数据请求
         const { data: res } = await this.$http.put('user/' + this.editForm.id, {
-          email: this.editForm.email,
-          mobile: this.editForm.mobile
+          email: this.editForm.user_email,
+          mobile: this.editForm.user_phone
         })
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
@@ -256,37 +256,6 @@ export default {
         this.$message.success('该用户已经删除')
         this.getUserList()
       })
-    },
-    // 展示分配角色的对话框
-    async setRoles(userInfo) {
-      this.userInfo = userInfo
-      // 再展示对话框之前获取所有的角色列表
-      const { data: res } = await this.$http.get('roles')
-      if (res.meta.status !== 200) {
-        return this.$message.error('获取角色列表失败!')
-      }
-      this.rolesList = res.data
-      this.setRolesDialogVisible = true
-    },
-    // 点击按钮,分配角色
-    async saveRolesInfo() {
-      if (!this.selectRoleId) {
-        return this.$message.error('请选择要分配的角色!')
-      }
-      const { data: res } = await this.$http.put(`user/${this.userInfo.id}/role`, {
-        rid: this.selectRoleId
-      })
-      if (res.meta.status !== 200) {
-        return this.$message.error('更新角色失败!')
-      }
-      this.$message.success('更新角色成功!')
-      this.getUserList()
-      this.setRolesDialogVisible = false
-    },
-    // 分配角色对话框关闭
-    setRolesDialogClosed() {
-      this.selectRoleId = ''
-      this.userInfo = ''
     }
   }
 }
