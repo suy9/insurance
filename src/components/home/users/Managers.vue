@@ -1,5 +1,5 @@
 <template>
-  <div class="users">
+  <div class="managers">
     <Breadcrumb name1="用户管理" name2="用户列表" />
     <!-- 卡片视图区域 -->
     <el-card class="box-card">
@@ -197,7 +197,7 @@ export default {
     // 监听Switch状态的改变
     async userStatuChanged(userInfo) {
       // console.log(userInfo)
-      const { data: res } = await this.$http.put(`managers/${userInfo.id}/state/${userInfo.mg_state}`)
+      const { data: res } = await this.$http.put(`manager/${userInfo.id}/state/${userInfo.mg_state}`)
       if (res.meta.status !== 200) {
         userInfo.mg_state = !userInfo.mg_state
         return this.$message.error('更新用户状态失败!')

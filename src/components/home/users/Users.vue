@@ -147,7 +147,7 @@ export default {
   },
   methods: {
     async getUserList() {
-      const { data: res } = await this.$http.get('manager', {
+      const { data: res } = await this.$http.get('user', {
         params: this.queryInfo
       })
       if (res.meta.status !== 200) {
@@ -173,7 +173,7 @@ export default {
     // 监听Switch状态的改变
     async userStatuChanged(userInfo) {
       // console.log(userInfo)
-      const { data: res } = await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
+      const { data: res } = await this.$http.put(`user/${userInfo.id}/state/${userInfo.mg_state}`)
       if (res.meta.status !== 200) {
         userInfo.mg_state = !userInfo.mg_state
         return this.$message.error('更新用户状态失败!')
@@ -203,7 +203,7 @@ export default {
     },
     // 展示编辑用于的对话框
     async showEditDialog(id) {
-      const { data: res } = await this.$http.get('users/' + id)
+      const { data: res } = await this.$http.get('user/' + id)
       if (res.meta.status !== 200) {
         return this.$message.error('查询用户数据失败~')
       }
@@ -221,7 +221,7 @@ export default {
         console.log(valid)
         if (!valid) return
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('users/' + this.editForm.id, {
+        const { data: res } = await this.$http.put('user/' + this.editForm.id, {
           email: this.editForm.email,
           mobile: this.editForm.mobile
         })
@@ -247,7 +247,7 @@ export default {
       if (confirmRusult !== 'confirm') {
         return this.$message.info('已经取消了删除')
       }
-      this.$http.delete('users/' + id).then(res => {
+      this.$http.delete('user/' + id).then(res => {
         const { data: response } = res
         console.log(response)
         if (response.meta.status !== 200) {
@@ -273,7 +273,7 @@ export default {
       if (!this.selectRoleId) {
         return this.$message.error('请选择要分配的角色!')
       }
-      const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, {
+      const { data: res } = await this.$http.put(`user/${this.userInfo.id}/role`, {
         rid: this.selectRoleId
       })
       if (res.meta.status !== 200) {
