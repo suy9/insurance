@@ -102,7 +102,6 @@
     <el-dialog title="分配角色" :visible.sync="setRolesDialogVisible" @close="setRolesDialogClosed" width="50%">
       <div>
         <p>当前的用户 : {{ userInfo.username }}</p>
-        <p>当前的角色 : {{ userInfo.role_name }}</p>
         <p>
           分配新角色:
           <el-select v-model="selectRoleId" placeholder="请选择">

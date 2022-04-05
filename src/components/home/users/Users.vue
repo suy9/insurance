@@ -62,7 +62,7 @@
         <el-form-item label="邮箱" prop="user_email">
           <el-input v-model="addForm.user_email"></el-input>
         </el-form-item>
-        <el-form-item label="电话" prop="mobile">
+        <el-form-item label="电话" prop="user_phone">
           <el-input v-model="addForm.user_phone"></el-input>
         </el-form-item>
         <el-form-item label="地址" prop="user_address">
@@ -222,8 +222,8 @@ export default {
         if (!valid) return
         // 发起修改用户信息的数据请求
         const { data: res } = await this.$http.put('user/' + this.editForm.id, {
-          email: this.editForm.user_email,
-          mobile: this.editForm.user_phone
+          user_email: this.editForm.user_email,
+          user_phone: this.editForm.user_phone
         })
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')

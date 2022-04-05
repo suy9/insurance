@@ -20,7 +20,7 @@
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column prop="seller_name" label="被投保人姓名"></el-table-column>
         <el-table-column prop="seller_sex" label="性别"></el-table-column>
-        <el-table-column prop="user_num" label="身份证号"></el-table-column>
+        <el-table-column prop="seller_num" label="身份证号"></el-table-column>
         <el-table-column prop="seller_email" label="邮箱"></el-table-column>
         <el-table-column prop="seller_mobile" label="电话"></el-table-column>
         <el-table-column prop="seller_address" label="地址"></el-table-column>
@@ -64,10 +64,10 @@
           <el-input v-model="addForm.seller_email"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="mobile">
-          <el-input v-model="addForm.seller_mobile"></el-input>
+          <el-input v-model="addForm.seller_phone"></el-input>
         </el-form-item>
-        <el-form-item label="地址" prop="mobile">
-          <el-input v-model="addForm.address"></el-input>
+        <el-form-item label="地址" prop="seller_address">
+          <el-input v-model="addForm.seller_address"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮区域 -->
@@ -224,8 +224,8 @@ export default {
         if (!valid) return
         // 发起修改用户信息的数据请求
         const { data: res } = await this.$http.put('seller/' + this.editForm.id, {
-          email: this.editForm.email,
-          mobile: this.editForm.mobile
+          seller_email: this.editForm.seller_email,
+          seller_phone: this.editForm.seller_phone
         })
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
