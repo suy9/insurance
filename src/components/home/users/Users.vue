@@ -24,6 +24,8 @@
         <el-table-column prop="user_email" label="邮箱"></el-table-column>
         <el-table-column prop="user_phone" label="电话"></el-table-column>
         <el-table-column prop="user_address" label="地址"></el-table-column>
+        <el-table-column prop="username" label="用户名"></el-table-column>
+        <el-table-column prop="user_birthday" label="生日"></el-table-column>
         <el-table-column label="操作" width="180px">
           <template v-slot="scope">
             <!-- 修改按钮 -->
@@ -56,8 +58,20 @@
         <el-form-item label="性别" prop="user_sex">
           <el-input v-model="addForm.user_sex"></el-input>
         </el-form-item>
+        <el-form-item label="生日" prop="user_birthday">
+          <el-input v-model="addForm.user_birthday"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="user_address">
+          <el-input v-model="addForm.user_address"></el-input>
+        </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
           <el-input v-model="addForm.user_num"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="user_email">
           <el-input v-model="addForm.user_email"></el-input>
@@ -65,9 +79,7 @@
         <el-form-item label="电话" prop="user_phone">
           <el-input v-model="addForm.user_phone"></el-input>
         </el-form-item>
-        <el-form-item label="地址" prop="user_address">
-          <el-input v-model="addForm.user_address"></el-input>
-        </el-form-item>
+
       </el-form>
       <!-- 底部按钮区域 -->
       <span slot="footer" class="dialog-footer">
@@ -97,8 +109,8 @@
 </template>
 
 <script>
-import { userAddFormRulesMixin } from '@/common/mixin.js'
-import Breadcrumb from 'components/content/breadcrumb/Breadcrumb'
+import { userAddFormRulesMixin } from '../../../common/mixin.js'
+import Breadcrumb from '../../../components/content/breadcrumb/Breadcrumb'
 export default {
   name: 'Users',
   mixins: [userAddFormRulesMixin],
@@ -127,7 +139,12 @@ export default {
         user_num: '',
         user_email: '',
         user_phone: '',
-        user_address: ''
+        user_address: '',
+        user_birthday: '',
+        username: '',
+        password: '',
+        user_qq: '',
+        user_edu: ''
       },
       // 修改用户消息对话框显示和隐藏
       editDialogVisble: false,
@@ -156,6 +173,7 @@ export default {
       this.$message.success('获取投保人列表成功!')
       this.userData.userList = res.data.users
       this.userData.total = res.data.total
+      console.log(this.userData.userList)
       // console.log(res)
     },
     // 监听 pagesize 改变事件 每页显示的个数
@@ -197,7 +215,7 @@ export default {
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
         // 添加成后重新获取用户数据,不需要用户手动刷新
-        this.getUserList()
+        await this.getUserList()
         return this.$message.success('用户添加成功了~')
       })
     },
