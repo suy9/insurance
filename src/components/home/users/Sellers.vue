@@ -102,7 +102,7 @@ import { userAddFormRulesMixin } from '@/common/mixin.js'
 import Breadcrumb from 'components/content/breadcrumb/Breadcrumb'
 
 export default {
-  name: 'Users',
+  name: 'Sellers',
   mixins: [userAddFormRulesMixin],
   data() {
     return {
