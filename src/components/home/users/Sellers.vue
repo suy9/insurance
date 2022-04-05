@@ -56,8 +56,8 @@
         </el-form-item>
         <el-form-item label="性别" prop="seller_sex">
           <el-select v-model="addForm.seller_sex" placeholder="请选择"  style="width: 15%;">
-            <el-option :value="0" label="男"></el-option>
-            <el-option :value="1" label="女"></el-option>
+            <el-option value="男" label="男"></el-option>
+            <el-option value="女" label="女"></el-option>
           </el-select>
 <!--          <el-input v-model="addForm.seller_sex"></el-input>-->
         </el-form-item>
@@ -70,12 +70,12 @@
         <el-form-item label="电话" prop="seller_phone">
           <el-input v-model="addForm.seller_phone"></el-input>
         </el-form-item>
-        <el-form-item label="生日" prop="user_birthday">
-          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日">
+        <el-form-item label="生日" prop="seller_birthday">
+          <el-date-picker v-model="addForm.seller_birthday" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日">
           </el-date-picker>
 
-          <!--          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="生日">-->
-          <!--          </el-date-picker>-->
+<!--          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="生日">-->
+<!--          </el-date-picker>-->
         </el-form-item>
         <el-form-item label="地址" prop="seller_address">
           <el-input v-model="addForm.seller_address"></el-input>
@@ -89,14 +89,26 @@
     </el-dialog>
     <!-- 修改用户信息对话框 -->
     <el-dialog title="修改用户" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
-      <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="70px">
+      <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="100px">
+        <el-form-item label="被投保人姓名" prop="seller_name">
+          <el-input v-model="editForm.seller_name" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="seller_sex">
+          <el-select v-model="editForm.seller_sex" disabled placeholder="请选择"  style="width: 15%;">
+            <el-option value="男" label="男" ></el-option>
+            <el-option value="女" label="女" ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="身份证号" prop="seller_num">
+          <el-input v-model="editForm.seller_num" disabled></el-input>
+        </el-form-item>
         <el-form-item label="邮箱" prop="seller_email">
           <el-input v-model="editForm.seller_email"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="seller_phone">
           <el-input v-model="editForm.seller_phone"></el-input>
         </el-form-item>
-        <el-form-item label="生日" prop="user_birthday">
+        <el-form-item label="生日" prop="seller_birthday">
           <el-input v-model="editForm.birthtime" disabled></el-input>
         </el-form-item>
         <el-form-item label="地址" prop="seller_address">
@@ -112,9 +124,8 @@
 </template>
 
 <script>
-import { userAddFormRulesMixin } from '@/common/mixin.js'
-import Breadcrumb from 'components/content/breadcrumb/Breadcrumb'
-
+import { userAddFormRulesMixin } from '../../../common/mixin.js'
+import Breadcrumb from '../../../components/content/breadcrumb/Breadcrumb'
 export default {
   name: 'Sellers',
   mixins: [userAddFormRulesMixin],
@@ -143,6 +154,7 @@ export default {
         seller_num: '',
         seller_email: '',
         seller_phone: '',
+        seller_birthday: '',
         seller_address: ''
       },
       // 修改用户消息对话框显示和隐藏
@@ -207,6 +219,7 @@ export default {
         if (!valid) return
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('seller', this.addForm)
+        debugger
         if (res.meta.status !== 201) {
           return this.$message.error('被投保人添加失败了~')
         }

@@ -56,9 +56,10 @@
         </el-form-item>
         <el-form-item label="性别" prop="user_sex">
           <el-select v-model="addForm.user_sex" placeholder="请选择"  style="width: 15%;">
-            <el-option :value="0" label="男"></el-option>
-            <el-option :value="1" label="女"></el-option>
+            <el-option value="男" label="男"></el-option>
+            <el-option value="女" label="女"></el-option>
           </el-select>
+<!--          <el-input v-model="addForm.seller_sex"></el-input>-->
         </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
           <el-input v-model="addForm.user_num"></el-input>
@@ -94,8 +95,8 @@
         </el-form-item>
         <el-form-item label="性别" prop="user_sex">
           <el-select v-model="editForm.user_sex" disabled placeholder="请选择"  style="width: 15%;">
-            <el-option :value="0" label="男" ></el-option>
-            <el-option :value="1" label="女" ></el-option>
+            <el-option value="男" label="男" ></el-option>
+            <el-option value="女" label="女" ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
@@ -108,7 +109,7 @@
           <el-input v-model="editForm.user_phone"></el-input>
         </el-form-item>
         <el-form-item label="生日" prop="user_birthday">
-          <el-input v-model="editForm.birthtime" disabled></el-input>
+          <el-input v-model="editForm.user_birthday" disabled></el-input>
         </el-form-item>
         <el-form-item label="地址" prop="user_address">
           <el-input v-model="editForm.user_address"></el-input>
@@ -218,7 +219,6 @@ export default {
         if (!valid) return
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('user', this.addForm)
-        debugger
         if (res.meta.status !== 201) {
           return this.$message.error('用户添加失败了~')
         }

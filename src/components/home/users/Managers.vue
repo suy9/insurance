@@ -214,6 +214,7 @@ export default {
         if (!valid) return
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('manager', this.addForm)
+        debugger
         if (res.meta.status !== 201) {
           return this.$message.error('用户添加失败了~')
         }
