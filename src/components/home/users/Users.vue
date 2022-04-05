@@ -55,11 +55,10 @@
           <el-input v-model="addForm.user_name"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="user_sex">
-          <el-input v-model="editForm.user_sex"></el-input>
-          <!--          <el-select v-model="editForm.user_sex" disabled placeholder="请选择"  style="width: 15%;">
-                      <el-option :value="男" label="男" ></el-option>
-                      <el-option :value="女" label="女" ></el-option>
-                    </el-select>-->
+          <el-select v-model="addForm.user_sex" placeholder="请选择"  style="width: 15%;">
+            <el-option :value="0" label="男"></el-option>
+            <el-option :value="1" label="女"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
           <el-input v-model="addForm.user_num"></el-input>
@@ -94,11 +93,10 @@
           <el-input v-model="editForm.user_name" disabled></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="user_sex">
-          <el-input v-model="editForm.user_sex"></el-input>
-<!--          <el-select v-model="editForm.user_sex" disabled placeholder="请选择"  style="width: 15%;">
-            <el-option :value="男" label="男" ></el-option>
-            <el-option :value="女" label="女" ></el-option>
-          </el-select>-->
+          <el-select v-model="editForm.user_sex" disabled placeholder="请选择"  style="width: 15%;">
+            <el-option :value="0" label="男" ></el-option>
+            <el-option :value="1" label="女" ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
           <el-input v-model="editForm.user_num" disabled></el-input>
@@ -219,7 +217,6 @@ export default {
         console.log(valid)
         if (!valid) return
         // 可以发起添加用户请求
-        debugger
         const { data: res } = await this.$http.post('user', this.addForm)
         debugger
         if (res.meta.status !== 201) {
