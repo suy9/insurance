@@ -23,9 +23,8 @@
         <el-table-column prop="user_num" label="身份证号"></el-table-column>
         <el-table-column prop="user_email" label="邮箱"></el-table-column>
         <el-table-column prop="user_phone" label="电话"></el-table-column>
-        <el-table-column prop="user_address" label="地址"></el-table-column>
-        <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="user_birthday" label="生日"></el-table-column>
+        <el-table-column prop="user_address" label="地址"></el-table-column>
         <el-table-column label="操作" width="180px">
           <template v-slot="scope">
             <!-- 修改按钮 -->
@@ -51,27 +50,19 @@
     <!-- 添加用户对话框 -->
     <el-dialog title="添加投保人" :visible.sync="addDialogVisible" width="50%" @close="addDislogClosed">
       <!-- 内容主题区域 -->
-      <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
+      <el-form label-width="100px" ref="addFormRef" :model="addForm" :rules="addFormRules">
         <el-form-item label="投保人姓名" prop="user_name">
           <el-input v-model="addForm.user_name"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="user_sex">
-          <el-input v-model="addForm.user_sex"></el-input>
-        </el-form-item>
-        <el-form-item label="生日" prop="user_birthday">
-          <el-input v-model="addForm.user_birthday"></el-input>
-        </el-form-item>
-        <el-form-item label="地址" prop="user_address">
-          <el-input v-model="addForm.user_address"></el-input>
+          <el-input v-model="editForm.user_sex"></el-input>
+          <!--          <el-select v-model="editForm.user_sex" disabled placeholder="请选择"  style="width: 15%;">
+                      <el-option :value="男" label="男" ></el-option>
+                      <el-option :value="女" label="女" ></el-option>
+                    </el-select>-->
         </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
           <el-input v-model="addForm.user_num"></el-input>
-        </el-form-item>
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="addForm.username"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="addForm.password"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="user_email">
           <el-input v-model="addForm.user_email"></el-input>
@@ -79,7 +70,16 @@
         <el-form-item label="电话" prop="user_phone">
           <el-input v-model="addForm.user_phone"></el-input>
         </el-form-item>
+        <el-form-item label="生日" prop="user_birthday">
+          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日">
+          </el-date-picker>
 
+<!--          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="生日">-->
+<!--          </el-date-picker>-->
+        </el-form-item>
+        <el-form-item label="地址" prop="user_address">
+          <el-input v-model="addForm.user_address"></el-input>
+        </el-form-item>
       </el-form>
       <!-- 底部按钮区域 -->
       <span slot="footer" class="dialog-footer">
@@ -89,12 +89,28 @@
     </el-dialog>
     <!-- 修改用户信息对话框 -->
     <el-dialog title="修改用户" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
-      <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="70px">
+      <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="100px">
+        <el-form-item label="投保人姓名" prop="user_name">
+          <el-input v-model="editForm.user_name" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="user_sex">
+          <el-input v-model="editForm.user_sex"></el-input>
+<!--          <el-select v-model="editForm.user_sex" disabled placeholder="请选择"  style="width: 15%;">
+            <el-option :value="男" label="男" ></el-option>
+            <el-option :value="女" label="女" ></el-option>
+          </el-select>-->
+        </el-form-item>
+        <el-form-item label="身份证号" prop="user_num">
+          <el-input v-model="editForm.user_num" disabled></el-input>
+        </el-form-item>
         <el-form-item label="邮箱" prop="user_email">
           <el-input v-model="editForm.user_email"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="user_phone">
           <el-input v-model="editForm.user_phone"></el-input>
+        </el-form-item>
+        <el-form-item label="生日" prop="user_birthday">
+          <el-input v-model="editForm.birthtime" disabled></el-input>
         </el-form-item>
         <el-form-item label="地址" prop="user_address">
           <el-input v-model="editForm.user_address"></el-input>
@@ -139,12 +155,8 @@ export default {
         user_num: '',
         user_email: '',
         user_phone: '',
-        user_address: '',
         user_birthday: '',
-        username: '',
-        password: '',
-        user_qq: '',
-        user_edu: ''
+        user_address: ''
       },
       // 修改用户消息对话框显示和隐藏
       editDialogVisble: false,
@@ -173,7 +185,6 @@ export default {
       this.$message.success('获取投保人列表成功!')
       this.userData.userList = res.data.users
       this.userData.total = res.data.total
-      console.log(this.userData.userList)
       // console.log(res)
     },
     // 监听 pagesize 改变事件 每页显示的个数
@@ -208,7 +219,9 @@ export default {
         console.log(valid)
         if (!valid) return
         // 可以发起添加用户请求
+        debugger
         const { data: res } = await this.$http.post('user', this.addForm)
+        debugger
         if (res.meta.status !== 201) {
           return this.$message.error('用户添加失败了~')
         }

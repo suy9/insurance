@@ -1,6 +1,6 @@
 <template>
   <div class="users">
-    <Breadcrumb name1="用户管理" name2="投保人列表"/>
+    <Breadcrumb name1="用户管理" name2="被投保人列表" />
     <!-- 卡片视图区域 -->
     <el-card class="box-card">
       <el-row :gutter="20">
@@ -12,7 +12,7 @@
         </el-col>
         <el-col :span="4">
           <!-- 添加用户区域 -->
-          <el-button type="primary" @click="addDialogVisible = true">添加投保人</el-button>
+          <el-button type="primary" @click="addDialogVisible = true">添加被投保人</el-button>
         </el-col>
       </el-row>
       <!-- 用户列表 -->
@@ -22,15 +22,15 @@
         <el-table-column prop="seller_sex" label="性别"></el-table-column>
         <el-table-column prop="seller_num" label="身份证号"></el-table-column>
         <el-table-column prop="seller_email" label="邮箱"></el-table-column>
-        <el-table-column prop="seller_mobile" label="电话"></el-table-column>
+        <el-table-column prop="seller_phone" label="电话"></el-table-column>
+        <el-table-column prop="seller_birthday" label="生日"></el-table-column>
         <el-table-column prop="seller_address" label="地址"></el-table-column>
         <el-table-column label="操作" width="180px">
           <template v-slot="scope">
             <!-- 修改按钮 -->
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
             <!-- 删除按钮 -->
-            <el-button type="danger" icon="el-icon-delete" size="mini"
-                       @click="removeUserById(scope.row.id)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -55,7 +55,11 @@
           <el-input v-model="addForm.seller_name"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="seller_sex">
-          <el-input v-model="addForm.seller_sex"></el-input>
+          <el-select v-model="addForm.seller_sex" placeholder="请选择"  style="width: 15%;">
+            <el-option :value="0" label="男"></el-option>
+            <el-option :value="1" label="女"></el-option>
+          </el-select>
+<!--          <el-input v-model="addForm.seller_sex"></el-input>-->
         </el-form-item>
         <el-form-item label="身份证号" prop="seller_num">
           <el-input v-model="addForm.seller_num"></el-input>
@@ -63,8 +67,15 @@
         <el-form-item label="邮箱" prop="seller_email">
           <el-input v-model="addForm.seller_email"></el-input>
         </el-form-item>
-        <el-form-item label="电话" prop="mobile">
+        <el-form-item label="电话" prop="seller_phone">
           <el-input v-model="addForm.seller_phone"></el-input>
+        </el-form-item>
+        <el-form-item label="生日" prop="user_birthday">
+          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日">
+          </el-date-picker>
+
+          <!--          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="生日">-->
+          <!--          </el-date-picker>-->
         </el-form-item>
         <el-form-item label="地址" prop="seller_address">
           <el-input v-model="addForm.seller_address"></el-input>
@@ -84,6 +95,9 @@
         </el-form-item>
         <el-form-item label="电话" prop="seller_phone">
           <el-input v-model="editForm.seller_phone"></el-input>
+        </el-form-item>
+        <el-form-item label="生日" prop="user_birthday">
+          <el-input v-model="editForm.birthtime" disabled></el-input>
         </el-form-item>
         <el-form-item label="地址" prop="seller_address">
           <el-input v-model="editForm.seller_address"></el-input>
@@ -194,13 +208,13 @@ export default {
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('seller', this.addForm)
         if (res.meta.status !== 201) {
-          return this.$message.error('用户添加失败了~')
+          return this.$message.error('被投保人添加失败了~')
         }
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
         // 添加成后重新获取用户数据,不需要用户手动刷新
         this.getUserList()
-        return this.$message.success('用户添加成功了~')
+        return this.$message.success('被投保人添加成功了~')
       })
     },
     // 展示编辑用于的对话框
