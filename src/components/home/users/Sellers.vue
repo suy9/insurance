@@ -156,7 +156,7 @@ export default {
         this.$message.error('获取被投保人列表失败!')
       }
       this.$message.success('获取被投保人列表成功!')
-      this.userData.userList = res.data.users
+      this.userData.userList = res.data.sellers
       this.userData.total = res.data.total
       // console.log(res)
     },

@@ -178,7 +178,7 @@ export default {
         this.$message.error('获取用户列表失败!')
       }
       this.$message.success('获取用户列表成功!')
-      this.userData.userList = res.data.users
+      this.userData.userList = res.data.managers
       this.userData.total = res.data.total
       // console.log(res)
     },
