@@ -164,7 +164,12 @@ export default {
       // 保存已经选中的角色id值
       selectRoleId: '',
       // 查询用户的对象
-      editForm: {}
+      editForm: {
+        seller_id: '',
+        seller_email: '',
+        seller_phone: '',
+        seller_address: ''
+      }
     }
   },
   components: {
@@ -184,7 +189,6 @@ export default {
       this.$message.success('获取被投保人列表成功!')
       this.userData.userList = res.data.sellers
       this.userData.total = res.data.total
-      // console.log(res)
     },
     // 监听 pagesize 改变事件 每页显示的个数
     handleSizeChange(newSize) {
@@ -219,14 +223,13 @@ export default {
         if (!valid) return
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('seller', this.addForm)
-        debugger
         if (res.meta.status !== 201) {
           return this.$message.error('被投保人添加失败了~')
         }
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
         // 添加成后重新获取用户数据,不需要用户手动刷新
-        this.getUserList()
+        await this.getUserList()
         return this.$message.success('被投保人添加成功了~')
       })
     },
@@ -237,7 +240,6 @@ export default {
         return this.$message.error('查询用户数据失败~')
       }
       this.editForm = res.data
-      console.log(res)
       this.editDialogVisble = true
       return this.$message.success('查询用户数据成功~')
     },
@@ -249,11 +251,11 @@ export default {
       this.$refs.editFormRef.validate(async valid => {
         console.log(valid)
         if (!valid) return
+        // eslint-disable-next-line no-unused-expressions
+        console.log(this.editForm)
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('seller/' + this.editForm.id, {
-          seller_email: this.editForm.seller_email,
-          seller_phone: this.editForm.seller_phone
-        })
+        const { data: res } = await this.$http.put('seller/' + this.editForm.seller_id, this.editForm)
+        debugger
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
         }

@@ -159,7 +159,11 @@ export default {
       // 保存已经选中的角色id值
       selectRoleId: '',
       // 查询用户的对象
-      editForm: {}
+      editForm: {
+        id: '',
+        email: '',
+        mobile: ''
+      }
     }
   },
   components: {
@@ -179,7 +183,7 @@ export default {
       this.$message.success('获取用户列表成功!')
       this.userData.userList = res.data.managers
       this.userData.total = res.data.total
-      // console.log(res)
+      console.log(this.userData)
     },
     // 监听 pagesize 改变事件 每页显示的个数
     handleSizeChange(newSize) {
@@ -221,7 +225,7 @@ export default {
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
         // 添加成后重新获取用户数据,不需要用户手动刷新
-        this.getUserList()
+        await this.getUserList()
         return this.$message.success('用户添加成功了~')
       })
     },
@@ -245,10 +249,7 @@ export default {
         console.log(valid)
         if (!valid) return
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('manager/' + this.editForm.id, {
-          email: this.editForm.email,
-          mobile: this.editForm.mobile
-        })
+        const { data: res } = await this.$http.put('manager/' + this.editForm.id, this.editForm)
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
         }

@@ -34,7 +34,7 @@ export const userAddFormRulesMixin = {
             trigger: 'blur'
           }
         ],
-        email: [
+        seller_email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { validator: checkEmail, trigger: 'blur' }
         ],

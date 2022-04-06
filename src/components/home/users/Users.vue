@@ -50,7 +50,7 @@
     <!-- 添加用户对话框 -->
     <el-dialog title="添加投保人" :visible.sync="addDialogVisible" width="50%" @close="addDislogClosed">
       <!-- 内容主题区域 -->
-      <el-form label-width="100px" ref="addFormRef" :model="addForm" :rules="addFormRules">
+      <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
         <el-form-item label="投保人姓名" prop="user_name">
           <el-input v-model="addForm.user_name"></el-input>
         </el-form-item>
@@ -164,7 +164,12 @@ export default {
       // 保存已经选中的角色id值
       selectRoleId: '',
       // 查询用户的对象
-      editForm: {}
+      editForm: {
+        user_id: '',
+        user_email: '',
+        user_phone: '',
+        user_address: ''
+      }
     }
   },
   components: {
@@ -220,18 +225,18 @@ export default {
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('user', this.addForm)
         if (res.meta.status !== 201) {
-          return this.$message.error('用户添加失败了~')
+          return this.$message.error('投保人添加失败了~')
         }
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
         // 添加成后重新获取用户数据,不需要用户手动刷新
         await this.getUserList()
-        return this.$message.success('用户添加成功了~')
+        return this.$message.success('投保人添加成功了~')
       })
     },
     // 展示编辑用于的对话框
     async showEditDialog(id) {
-      const { data: res } = await this.$http.get('user/' + id)
+      const { data: res } = await this.$http.get('user/' + 1)
       if (res.meta.status !== 200) {
         return this.$message.error('查询用户数据失败~')
       }
@@ -249,10 +254,8 @@ export default {
         console.log(valid)
         if (!valid) return
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('user/' + this.editForm.id, {
-          user_email: this.editForm.user_email,
-          user_phone: this.editForm.user_phone
-        })
+        const { data: res } = await this.$http.put('seller/' + this.editForm.user_id, this.editForm)
+        debugger
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
         }
