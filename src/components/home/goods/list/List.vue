@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <Breadcrumb name1="保险管理" name2="保险列表" />
+    <Breadcrumb name1="险种管理" name2="险种列表" />
     <el-card>
       <!-- 按钮搜索/添加区域 -->
       <el-row :gutter="20">
@@ -10,21 +10,15 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="goAddpage">添加保险</el-button>
+          <el-button type="primary" @click="goAddpage">添加险种</el-button>
         </el-col>
       </el-row>
       <!-- table区域 -->
       <el-row>
         <el-table :data="goodsList" border style="width: 100%">
           <el-table-column type="index" label="#"></el-table-column>
-          <el-table-column prop="goods_name" label="保险名称"></el-table-column>
+          <el-table-column prop="goods_name" label="名称"></el-table-column>
           <el-table-column prop="goods_price" label="价格(元)" width="110px"></el-table-column>
-          <!-- <el-table-column
-            prop="goods_number"
-            width="120px"
-            label="保险数量"
-          ></el-table-column> -->
-          <el-table-column prop="goods_weight" label="保险重量" width="130px"></el-table-column>
           <el-table-column width="220px" label="创建时间">
             <template v-slot="scope">
               {{ scope.row.add_time | dataFormat }}
@@ -82,6 +76,7 @@ export default {
       const { data: res } = await this.$http.get('goods', {
         params: this.queryInfo
       })
+      debugger
       if (res.meta.status !== 200) {
         return this.$message.error('获取保险列表失败!')
       }

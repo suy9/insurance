@@ -249,7 +249,6 @@ export default {
     },
     editUserInfo() {
       this.$refs.editFormRef.validate(async valid => {
-        console.log(valid)
         if (!valid) return
         // eslint-disable-next-line no-unused-expressions
         console.log(this.editForm)
@@ -260,7 +259,7 @@ export default {
           this.$message.error('更新用户信息失败!')
         }
         this.editDialogVisble = false
-        this.getUserList()
+        await this.getUserList()
         this.$message.success('更新用户信息成功!')
       })
     },

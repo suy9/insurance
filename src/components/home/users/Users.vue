@@ -59,7 +59,6 @@
             <el-option value="男" label="男"></el-option>
             <el-option value="女" label="女"></el-option>
           </el-select>
-<!--          <el-input v-model="addForm.seller_sex"></el-input>-->
         </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
           <el-input v-model="addForm.user_num"></el-input>
@@ -183,6 +182,7 @@ export default {
       const { data: res } = await this.$http.get('user', {
         params: this.queryInfo
       })
+      console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error('获取投保人列表失败!')
       }
@@ -236,12 +236,12 @@ export default {
     },
     // 展示编辑用于的对话框
     async showEditDialog(id) {
-      const { data: res } = await this.$http.get('user/' + 1)
+      console.log(id)
+      const { data: res } = await this.$http.get('user/' + id)
       if (res.meta.status !== 200) {
         return this.$message.error('查询用户数据失败~')
       }
       this.editForm = res.data
-      console.log(res)
       this.editDialogVisble = true
       return this.$message.success('查询用户数据成功~')
     },
@@ -254,13 +254,13 @@ export default {
         console.log(valid)
         if (!valid) return
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('seller/' + this.editForm.user_id, this.editForm)
+        const { data: res } = await this.$http.put('user/' + this.editForm.user_id, this.editForm)
         debugger
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
         }
         this.editDialogVisble = false
-        this.getUserList()
+        await this.getUserList()
         this.$message.success('更新用户信息成功!')
       })
     },
