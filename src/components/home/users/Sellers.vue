@@ -29,7 +29,7 @@
           <template v-slot="scope">
             <!-- 修改按钮 -->
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <!-- 删除按钮 -->
+            <!-- 修改按钮 -->
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
           </template>
         </el-table-column>

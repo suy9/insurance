@@ -1,3 +1,5 @@
+<script src="../../../../../insurance_api/services/UserService.js"></script>
+<script src="../../../../../insurance_api/dao/UserDAO.js"></script>
 <template>
   <div class="users">
     <Breadcrumb name1="用户管理" name2="投保人列表" />
@@ -182,7 +184,7 @@ export default {
       const { data: res } = await this.$http.get('user', {
         params: this.queryInfo
       })
-      console.log(res)
+      console.log(res.data)
       if (res.meta.status !== 200) {
         this.$message.error('获取投保人列表失败!')
       }
@@ -267,15 +269,15 @@ export default {
     // 根据id删除对应的用户信息
     async removeUserById(id) {
       // 询问用户是否删除用户
-      const confirmRusult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '永久删除该用户', {
+      const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '永久删除该用户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).catch(err => err)
-      console.log(confirmRusult)
+      console.log(confirmResult)
       // 用户点击了删除,则返回字符串 confirm
       // 用户取消了删除,则返回字符串 cancel
-      if (confirmRusult !== 'confirm') {
+      if (confirmResult !== 'confirm') {
         return this.$message.info('已经取消了删除')
       }
       this.$http.delete('user/' + id).then(res => {
