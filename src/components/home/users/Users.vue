@@ -1,5 +1,3 @@
-<script src="../../../../../insurance_api/services/UserService.js"></script>
-<script src="../../../../../insurance_api/dao/UserDAO.js"></script>
 <template>
   <div class="users">
     <Breadcrumb name1="用户管理" name2="投保人列表" />
@@ -20,13 +18,13 @@
       <!-- 用户列表 -->
       <el-table :data="userData.userList" stripe style="width: 100%" border>
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column prop="user_name" label="投保人姓名"></el-table-column>
-        <el-table-column prop="user_sex" label="性别"></el-table-column>
-        <el-table-column prop="user_num" label="身份证号"></el-table-column>
-        <el-table-column prop="user_email" label="邮箱"></el-table-column>
-        <el-table-column prop="user_phone" label="电话"></el-table-column>
-        <el-table-column prop="user_birthday" label="生日"></el-table-column>
-        <el-table-column prop="user_address" label="地址"></el-table-column>
+        <el-table-column prop="user_name" sortable :sort-orders="['ascending','descending']" label="投保人姓名"></el-table-column>
+        <el-table-column prop="user_sex" sortable :sort-orders="['ascending','descending']" label="性别"></el-table-column>
+        <el-table-column prop="user_num" sortable :sort-orders="['ascending','descending']" label="身份证号" width="180px"></el-table-column>
+        <el-table-column prop="user_email" sortable :sort-orders="['ascending','descending']" label="邮箱"></el-table-column>
+        <el-table-column prop="user_phone" sortable :sort-orders="['ascending','descending']" label="电话"></el-table-column>
+        <el-table-column prop="user_birthday" sortable :sort-orders="['ascending','descending']" label="生日"></el-table-column>
+        <el-table-column prop="user_address" sortable :sort-orders="['ascending','descending']"  label="地址"></el-table-column>
         <el-table-column label="操作" width="180px">
           <template v-slot="scope">
             <!-- 修改按钮 -->
@@ -52,7 +50,7 @@
     <!-- 添加用户对话框 -->
     <el-dialog title="添加投保人" :visible.sync="addDialogVisible" width="50%" @close="addDislogClosed">
       <!-- 内容主题区域 -->
-      <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
+      <el-form label-width="100px" ref="addFormRef" :model="addForm" :rules="UseraddFormRules">
         <el-form-item label="投保人姓名" prop="user_name">
           <el-input v-model="addForm.user_name"></el-input>
         </el-form-item>
@@ -63,7 +61,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="身份证号" prop="user_num">
-          <el-input v-model="addForm.user_num"></el-input>
+          <el-input v-model="addForm.user_num" @blur="getMES(addForm.user_num)"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="user_email">
           <el-input v-model="addForm.user_email"></el-input>
@@ -72,11 +70,7 @@
           <el-input v-model="addForm.user_phone"></el-input>
         </el-form-item>
         <el-form-item label="生日" prop="user_birthday">
-          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日">
-          </el-date-picker>
-
-<!--          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="生日">-->
-<!--          </el-date-picker>-->
+          <el-input v-model="addForm.user_birthday"></el-input>
         </el-form-item>
         <el-form-item label="地址" prop="user_address">
           <el-input v-model="addForm.user_address"></el-input>
@@ -90,7 +84,7 @@
     </el-dialog>
     <!-- 修改用户信息对话框 -->
     <el-dialog title="修改用户" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
-      <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="100px">
+      <el-form :model="editForm" :rules="UseraddFormRules" ref="editFormRef" label-width="100px">
         <el-form-item label="投保人姓名" prop="user_name">
           <el-input v-model="editForm.user_name" disabled></el-input>
         </el-form-item>
@@ -125,8 +119,8 @@
 </template>
 
 <script>
-import { userAddFormRulesMixin } from '../../../common/mixin.js'
-import Breadcrumb from '../../../components/content/breadcrumb/Breadcrumb'
+import { userAddFormRulesMixin } from '@/common/mixin.js'
+import Breadcrumb from 'components/content/breadcrumb/Breadcrumb'
 export default {
   name: 'Users',
   mixins: [userAddFormRulesMixin],
@@ -165,12 +159,7 @@ export default {
       // 保存已经选中的角色id值
       selectRoleId: '',
       // 查询用户的对象
-      editForm: {
-        user_id: '',
-        user_email: '',
-        user_phone: '',
-        user_address: ''
-      }
+      editForm: {}
     }
   },
   components: {
@@ -184,7 +173,6 @@ export default {
       const { data: res } = await this.$http.get('user', {
         params: this.queryInfo
       })
-      console.log(res.data)
       if (res.meta.status !== 200) {
         this.$message.error('获取投保人列表失败!')
       }
@@ -205,16 +193,6 @@ export default {
       this.queryInfo.pagenum = newPage
       this.getUserList()
     },
-    // // 监听Switch状态的改变
-    // async userStatuChanged(userInfo) {
-    //   // console.log(userInfo)
-    //   const { data: res } = await this.$http.put(`user/${userInfo.id}/state/${userInfo.mg_state}`)
-    //   if (res.meta.status !== 200) {
-    //     userInfo.mg_state = !userInfo.mg_state
-    //     return this.$message.error('更新用户状态失败!')
-    //   }
-    //   return this.$message.success('更新用户状态成功!')
-    // },
     // 监听添加用户的对话框关闭事件
     addDislogClosed() {
       this.$refs.addFormRef.resetFields()
@@ -226,25 +204,36 @@ export default {
         if (!valid) return
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('user', this.addForm)
-        debugger
         if (res.meta.status !== 201) {
-          return this.$message.error('投保人添加失败了~')
+          return this.$message.error('用户添加失败了~')
         }
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
         // 添加成后重新获取用户数据,不需要用户手动刷新
-        await this.getUserList()
-        return this.$message.success('投保人添加成功了~')
+        this.getUserList()
+        return this.$message.success('用户添加成功了~')
       })
     },
-    // 展示编辑用于的对话框
+    // 根据身份证号码获取性别生日
+    getMES(num) {
+      let sex = null
+      let birth = null
+      sex = num.substring(16, 17)
+      birth = num.substring(6, 10) + '-' + num.substring(10, 12) + '-' + num.substring(12, 14)
+      if (sex % 2 === 0) {
+        this.addForm.user_sex = '男'
+      }
+      this.addForm.user_sex = '女'
+      this.addForm.user_birthday = birth
+    },
+    // 展示编辑用户的对话框
     async showEditDialog(id) {
-      console.log(id)
       const { data: res } = await this.$http.get('user/' + id)
       if (res.meta.status !== 200) {
         return this.$message.error('查询用户数据失败~')
       }
       this.editForm = res.data
+      console.log(res)
       this.editDialogVisble = true
       return this.$message.success('查询用户数据成功~')
     },
@@ -252,33 +241,38 @@ export default {
     aditClosed() {
       this.$refs.editFormRef.resetFields()
     },
+    // 点击按钮，编辑用户信息
     editUserInfo() {
       this.$refs.editFormRef.validate(async valid => {
         console.log(valid)
         if (!valid) return
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('user/' + this.editForm.user_id, this.editForm)
+        const { data: res } = await this.$http.put('user/' + this.editForm.id, {
+          user_email: this.editForm.user_email,
+          user_phone: this.editForm.user_phone,
+          user_address: this.editForm.user_address
+        })
         debugger
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
         }
         this.editDialogVisble = false
-        await this.getUserList()
+        this.getUserList()
         this.$message.success('更新用户信息成功!')
       })
     },
     // 根据id删除对应的用户信息
     async removeUserById(id) {
       // 询问用户是否删除用户
-      const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '永久删除该用户', {
+      const confirmRusult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '永久删除该用户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).catch(err => err)
-      console.log(confirmResult)
+      console.log(confirmRusult)
       // 用户点击了删除,则返回字符串 confirm
       // 用户取消了删除,则返回字符串 cancel
-      if (confirmResult !== 'confirm') {
+      if (confirmRusult !== 'confirm') {
         return this.$message.info('已经取消了删除')
       }
       this.$http.delete('user/' + id).then(res => {
