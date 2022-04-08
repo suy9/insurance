@@ -20,12 +20,12 @@
       <!--      用户列表-->
       <el-table :data="userData.userList" border tooltip-effect="dark" style="width: 100%">
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column label="保单编号" prop="order_number" width="180"></el-table-column>
-        <el-table-column label="投保人" prop="user_id" width="180"></el-table-column>
-        <el-table-column label="被投保人" prop="seller_id" width="180"></el-table-column>
-        <el-table-column label="保单类型" prop="order_kind" width="180"></el-table-column>
-        <el-table-column label="保单价格" prop="order_price" width="180"></el-table-column>
-        <el-table-column label="支付状态" prop="pay_status" width="180">
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="保单编号" prop="order_number" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="投保人" prop="user_id" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="被投保人" prop="seller_id" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="保单类型" prop="order_kind" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="保单价格" prop="order_price" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="支付状态" prop="pay_status" width="180">
           <template slot-scope="scope">
             <span v-if="scope.row.pay_status === 0">未支付</span>
             <span v-if="scope.row.pay_status === 1">已支付</span>
@@ -42,7 +42,7 @@
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <!-- 修改按钮 -->
+            <!-- 删除按钮 -->
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeOrderById(scope.row.id)"></el-button>
           </template>
         </el-table-column>
@@ -121,7 +121,7 @@
           <el-select v-model="editForm.order_pay" placeholder="请选择"  style="width: 15%;">
             <el-option value="1" label="支付宝"></el-option>
             <el-option value="2" label="微信"></el-option>
-            <el-option value="3" label="银行卡" @close="editClosed" :visible.sync="editDialogVisble" width="50%"></el-option>
+            <el-option value="3" label="银行卡"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="支付状态" prop="pay_status">
@@ -173,6 +173,7 @@ export default {
       },
       editDialogVisble: false,
       editForm: {
+        order_id: '',
         user_id: '',
         seller_id: '',
         order_kind: '',
@@ -215,17 +216,14 @@ export default {
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
     },
-    // 展示修改对话框
-    showBox() {
-      this.addressDialogVisible = true
-    },
     // 点击按钮,添加保单
     addOrder() {
       this.$refs.addFormRef.validate(async valid => {
-        console.log(valid)
-        if (valid) return
+        if (!valid) return
         // 可以发起添加保单请求
         const { data: res } = await this.$http.post('orders', this.addForm)
+        console.log(res)
+        debugger
         if (res.meta.status !== 201) {
           return this.$message.error('添加保单失败!')
         }
@@ -238,7 +236,6 @@ export default {
     },
     // 展示编辑用于的对话框
     async showEditDialog(id) {
-      debugger
       const { data: res } = await this.$http.get('orders/' + id)
       if (res.meta.status !== 200) {
         return this.$message.error('查询保单失败!')
@@ -256,8 +253,7 @@ export default {
         console.log(valid)
         if (valid) return
         // 发起修改保单请求的操作
-        const { data: res } = await this.$http.put('orders/' + this.editForm.id, this.editForm)
-        debugger
+        const { data: res } = await this.$http.put('orders/' + this.editForm.order_id, this.editForm)
         if (res.meta.status !== 200) {
           return this.$message.error('修改保单失败!')
         }

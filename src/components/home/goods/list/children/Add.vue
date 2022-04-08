@@ -1,14 +1,13 @@
 <template>
   <div class="add">
-    <Breadcrumb name1="保险管理" name2="添加保险" />
+    <Breadcrumb name1="险种管理" name2="险种列表" name3="添加险种"/>
     <!--    卡片视图-->
     <el-card>
       <!--      提示区-->
-      <el-alert title="添加保险信息" type="info" center :closable="false" show-icon> </el-alert>
+      <el-alert title="添加险种信息" type="info" center :closable="false" show-icon> </el-alert>
       <!--      步骤条区-->
       <el-steps align-center :active="activeIndex - 0" finish-status="success">
         <el-step title="基本信息"></el-step>
-        <el-step title="保险属性"></el-step>
         <el-step title="保险内容"></el-step>
         <el-step title="完成"></el-step>
       </el-steps>
@@ -22,17 +21,9 @@
             <el-form-item label="保险价格" prop="goods_price">
               <el-input v-model="addForm.goods_price" type="number"></el-input>
             </el-form-item>
-            <el-form-item label="保险数量" prop="goods_number">
-              <el-input v-model="addForm.goods_number" type="number"></el-input>
-            </el-form-item>
             <!-- 级联选择器 -->
             <el-form-item label="保险分类" prop="goods_cat">
               <el-cascader v-model="addForm.goods_cat" :options="cateList" :props="{ expandTrigger: 'hover', ...cateProps }" @change="handleChange"></el-cascader>
-            </el-form-item>
-          </el-tab-pane>
-          <el-tab-pane label="保险属性" name="2">
-            <el-form-item :label="item.attr_name" v-for="item in onlyTableData" :key="item.attr_id">
-              <el-input v-model="item.attr_vals"></el-input>
             </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="保险内容" name="4">
@@ -65,8 +56,7 @@ export default {
         goods_name: '',
         goods_price: 0,
         // 保险的详情描述
-        goods_introduce: '',
-        attrs: []
+        goods_introduce: ''
       },
       // 存放保险列表数据
       cateList: [],
@@ -78,9 +68,7 @@ export default {
       // 动态参数列表数据
       manyTableData: [],
       // 静态参数列表数据
-      onlyTableData: [],
-      // 图片预览的对话框
-      previewDialogVisible: false
+      onlyTableData: []
     }
   },
   created() {
