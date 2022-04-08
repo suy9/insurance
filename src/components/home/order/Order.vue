@@ -21,8 +21,20 @@
       <el-table :data="userData.userList" border tooltip-effect="dark" style="width: 100%">
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="保单编号" prop="order_number" width="180"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="投保人" prop="user_id" width="180"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="被投保人" prop="seller_id" width="180"></el-table-column>
+        <el-table-column label="投保人信息" align="center">
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="姓名" prop="user_name" width="180"></el-table-column>
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="身份证" prop="user_num" width="180"></el-table-column>
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="生日" prop="user_birthday" width="180"></el-table-column>
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="电话" prop="user_phone" width="180"></el-table-column>
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="地址" prop="user_address" width="180"></el-table-column>
+        </el-table-column>
+        <el-table-column label="被投保人信息" align="center">
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="姓名" prop="seller_name" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="身份证" prop="seller_num" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="生日" prop="seller_birthday" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="电话" prop="seller_phone" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="地址" prop="seller_address" width="180"></el-table-column>
+        </el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="保单类型" prop="order_kind" width="180"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="保单价格" prop="order_price" width="180"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="支付状态" prop="pay_status" width="180">
@@ -293,5 +305,6 @@ export default {
 <style lang="less" scoped>
 .el-table {
   margin-top: 15px;
+  align: center;
 }
 </style>
