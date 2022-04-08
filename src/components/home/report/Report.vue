@@ -13,7 +13,7 @@
 // 1. 引入 echarts 按需引入
 import * as echarts from 'echarts'
 import _ from 'lodash'
-import Breadcrumb from 'components/content/breadcrumb/Breadcrumb'
+import Breadcrumb from '../../../components/content/breadcrumb/Breadcrumb'
 export default {
   name: 'Report',
   components: { Breadcrumb },

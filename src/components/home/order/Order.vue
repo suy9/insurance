@@ -18,30 +18,30 @@
         </el-col>
       </el-row>
       <!--      用户列表-->
-      <el-table :data="userData.userList" border tooltip-effect="dark" style="width: 100%">
+      <el-table class="lines" :data="userData.userList" border tooltip-effect="dark" style="width: 100%">
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="保单编号" prop="order_number" width="180"></el-table-column>
         <el-table-column label="投保人信息" align="center">
-          <el-table-column sortable :sort-orders="['ascending','descending']" label="姓名" prop="user_name" width="180"></el-table-column>
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="姓名" prop="user_name" width="80"></el-table-column>
           <el-table-column sortable :sort-orders="['ascending','descending']" label="身份证" prop="user_num" width="180"></el-table-column>
-          <el-table-column sortable :sort-orders="['ascending','descending']" label="生日" prop="user_birthday" width="180"></el-table-column>
-          <el-table-column sortable :sort-orders="['ascending','descending']" label="电话" prop="user_phone" width="180"></el-table-column>
-          <el-table-column sortable :sort-orders="['ascending','descending']" label="地址" prop="user_address" width="180"></el-table-column>
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="生日" prop="user_birthday" width="150"></el-table-column>
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="电话" prop="user_phone" width="150"></el-table-column>
+          <el-table-column sortable :sort-orders="['ascending','descending']" label="地址" prop="user_address" width="200"></el-table-column>
         </el-table-column>
         <el-table-column label="被投保人信息" align="center">
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="姓名" prop="seller_name" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="姓名" prop="seller_name" width="80"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="身份证" prop="seller_num" width="180"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="生日" prop="seller_birthday" width="180"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="电话" prop="seller_phone" width="180"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="地址" prop="seller_address" width="180"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="生日" prop="seller_birthday" width="150"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="电话" prop="seller_phone" width="150"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="地址" prop="seller_address" width="200"></el-table-column>
         </el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="保单类型" prop="order_kind" width="180"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="保单价格" prop="order_price" width="180"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="支付状态" prop="pay_status" width="180">
-          <template slot-scope="scope">
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="保单类型" prop="order_kind" width="100"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="保单价格" prop="order_price" width="100"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="支付状态" prop="pay_status" width="50">
+<!--          <template slot-scope="scope">
             <span v-if="scope.row.pay_status === 0">未支付</span>
             <span v-if="scope.row.pay_status === 1">已支付</span>
-          </template>
+          </template>-->
         </el-table-column>
         <el-table-column label="支付方式" prop="order_pay" width="180">
           <template slot-scope="scope">
