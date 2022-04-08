@@ -35,19 +35,20 @@
         <el-table-column sortable :sort-orders="['ascending','descending']" label="电话" prop="seller_phone" width="150"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="地址" prop="seller_address" width="200"></el-table-column>
         </el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="下次缴费时间" prop="next_pay_time" width="100"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="保单类型" prop="order_kind" width="100"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="保单价格" prop="order_price" width="100"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="支付状态" prop="pay_status" width="50">
-<!--          <template slot-scope="scope">
-            <span v-if="scope.row.pay_status === 0">未支付</span>
-            <span v-if="scope.row.pay_status === 1">已支付</span>
-          </template>-->
-        </el-table-column>
-        <el-table-column label="支付方式" prop="order_pay" width="180">
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="订单状态" width="50">
           <template slot-scope="scope">
-            <span v-if="scope.row.order_pay === 1">支付宝</span>
-            <span v-if="scope.row.order_pay === 2">微信</span>
-            <span v-if="scope.row.order_pay === 3">银行卡</span>
+            <span v-if="scope.row.pay_status == 0">正常</span>
+            <span v-else>已过期123</span>
+          </template>
+        </el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="支付方式" prop="order_pay" width="180">
+          <template slot-scope="scope">
+            <span v-if="scope.row.order_pay == 1">支付宝</span>
+            <span v-else-if="scope.row.order_pay == 2">微信</span>
+            <span v-else>银行卡</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180px">
@@ -75,11 +76,11 @@
     <el-dialog title="添加保单" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <!-- 内容主题区域 -->
       <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
-        <el-form-item label="投保人id" prop="user_id">
-          <el-input v-model="addForm.user_id"></el-input>
+        <el-form-item label="投保人身份证号" prop="user_id">
+          <el-input v-model="addForm.user_num"></el-input>
         </el-form-item>
-        <el-form-item label="被投保人id" prop="seller_id">
-          <el-input v-model="addForm.seller_id"></el-input>
+        <el-form-item label="被投保人身份证号" prop="seller_id">
+          <el-input v-model="addForm.seller_num"></el-input>
         </el-form-item>
         <el-form-item label="保险种类" prop="order_kind">
           <el-input v-model="addForm.order_kind"></el-input>
@@ -97,10 +98,10 @@
             <el-option value="3" label="银行卡"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="支付状态" prop="pay_status">
+        <el-form-item label="订单状态" prop="pay_status">
           <el-select v-model="addForm.pay_status" placeholder="请选择"  style="width: 15%;">
-            <el-option value="0" label="未支付"></el-option>
-            <el-option value="1" label="已支付"></el-option>
+            <el-option value="0" label=正常></el-option>
+            <el-option value="1" label="已过期"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -175,8 +176,8 @@ export default {
       },
       addDialogVisible: false,
       addForm: {
-        user_id: '',
-        seller_id: '',
+        user_num: '',
+        seller_num: '',
         order_kind: '',
         order_number: '',
         order_price: '',
@@ -208,6 +209,7 @@ export default {
       const { data: res } = await this.$http.get('orders', {
         params: this.queryInfo
       })
+      console.log(res.data)
       if (res.meta.status !== 200) {
         return this.$message.error('获取订单列表失败!')
       }

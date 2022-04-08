@@ -18,18 +18,18 @@
       <!-- 用户列表 -->
       <el-table :data="userData.userList" stripe style="width: 100%" border>
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column prop="seller_name" label="被投保人姓名"></el-table-column>
-        <el-table-column prop="seller_sex" label="性别"></el-table-column>
-        <el-table-column prop="seller_num" label="身份证号"></el-table-column>
-        <el-table-column prop="seller_email" label="邮箱"></el-table-column>
-        <el-table-column prop="seller_phone" label="电话"></el-table-column>
-        <el-table-column prop="seller_birthday" label="生日"></el-table-column>
-        <el-table-column prop="seller_address" label="地址"></el-table-column>
+        <el-table-column prop="seller_name" sortable :sort-orders="['ascending','descending']" label="被投保人姓名"></el-table-column>
+        <el-table-column prop="seller_sex" sortable :sort-orders="['ascending','descending']" label="性别"></el-table-column>
+        <el-table-column prop="seller_num" sortable :sort-orders="['ascending','descending']" label="身份证号" width="180px"></el-table-column>
+        <el-table-column prop="seller_email" sortable :sort-orders="['ascending','descending']" label="邮箱"></el-table-column>
+        <el-table-column prop="seller_phone" sortable :sort-orders="['ascending','descending']" label="电话"></el-table-column>
+        <el-table-column prop="seller_birthday" sortable :sort-orders="['ascending','descending']" label="生日"></el-table-column>
+        <el-table-column prop="seller_address" sortable :sort-orders="['ascending','descending']" label="地址"></el-table-column>
         <el-table-column label="操作" width="180px">
           <template v-slot="scope">
             <!-- 修改按钮 -->
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <!-- 修改按钮 -->
+            <!-- 删除按钮 -->
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
           </template>
         </el-table-column>
@@ -62,7 +62,7 @@
 <!--          <el-input v-model="addForm.seller_sex"></el-input>-->
         </el-form-item>
         <el-form-item label="身份证号" prop="seller_num">
-          <el-input v-model="addForm.seller_num"></el-input>
+          <el-input v-model="addForm.seller_num" @blur="getMES(addForm.seller_num)"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="seller_email">
           <el-input v-model="addForm.seller_email"></el-input>
@@ -71,11 +71,7 @@
           <el-input v-model="addForm.seller_phone"></el-input>
         </el-form-item>
         <el-form-item label="生日" prop="seller_birthday">
-          <el-date-picker v-model="addForm.seller_birthday" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日">
-          </el-date-picker>
-
-<!--          <el-date-picker v-model="addForm.user_birthday" type="date" placeholder="生日">-->
-<!--          </el-date-picker>-->
+          <el-input v-model="addForm.seller_birthday"></el-input>
         </el-form-item>
         <el-form-item label="地址" prop="seller_address">
           <el-input v-model="addForm.seller_address"></el-input>
@@ -109,7 +105,7 @@
           <el-input v-model="editForm.seller_phone"></el-input>
         </el-form-item>
         <el-form-item label="生日" prop="seller_birthday">
-          <el-input v-model="editForm.birthtime" disabled></el-input>
+          <el-input v-model="editForm.seller_birthday" disabled></el-input>
         </el-form-item>
         <el-form-item label="地址" prop="seller_address">
           <el-input v-model="editForm.seller_address"></el-input>
@@ -233,7 +229,19 @@ export default {
         return this.$message.success('被投保人添加成功了~')
       })
     },
-    // 展示编辑用于的对话框
+    // 根据身份证号码获取性别生日
+    getMES(num) {
+      let sex = null
+      let birth = null
+      sex = num.substring(16, 17)
+      birth = num.substring(6, 10) + '-' + num.substring(10, 12) + '-' + num.substring(12, 14)
+      if (sex % 2 === 0) {
+        this.addForm.seller_sex = '男'
+      }
+      this.addForm.seller_sex = '女'
+      this.addForm.seller_birthday = birth
+    },
+    // 展示编辑用户的对话框
     async showEditDialog(id) {
       const { data: res } = await this.$http.get('seller/' + id)
       if (res.meta.status !== 200) {
@@ -253,7 +261,11 @@ export default {
         // eslint-disable-next-line no-unused-expressions
         console.log(this.editForm)
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('seller/' + this.editForm.seller_id, this.editForm)
+        const { data: res } = await this.$http.put('seller/' + this.editForm.id, {
+          seller_email: this.editForm.seller_email,
+          seller_phone: this.editForm.seller_phone,
+          seller_address: this.editForm.seller_address
+        })
         debugger
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
