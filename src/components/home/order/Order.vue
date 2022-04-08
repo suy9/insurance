@@ -76,10 +76,10 @@
     <el-dialog title="添加保单" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <!-- 内容主题区域 -->
       <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
-        <el-form-item label="投保人身份证号" prop="user_id">
+        <el-form-item label="投保人身份证号" prop="user_num">
           <el-input v-model="addForm.user_num"></el-input>
         </el-form-item>
-        <el-form-item label="被投保人身份证号" prop="seller_id">
+        <el-form-item label="被投保人身份证号" prop="seller_num">
           <el-input v-model="addForm.seller_num"></el-input>
         </el-form-item>
         <el-form-item label="保险种类" prop="order_kind">
