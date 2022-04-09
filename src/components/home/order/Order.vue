@@ -1,5 +1,3 @@
-<script src="../../../../../insurance_api/services/OrderService.js"></script>
-<script src="../../../../../insurance_api/dao/OrderDAO.js"></script>
 <template>
   <div class="order">
     <Breadcrumb name1="保单管理" name2="保单列表" />
@@ -35,13 +33,13 @@
         <el-table-column sortable :sort-orders="['ascending','descending']" label="电话" prop="seller_phone" width="150"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="地址" prop="seller_address" width="200"></el-table-column>
         </el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="下次缴费时间" prop="next_pay_time" width="100"></el-table-column>
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="下次缴费时间" prop="next_pay_time" width="120"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="保单类型" prop="order_kind" width="100"></el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="保单价格" prop="order_price" width="100"></el-table-column>
-        <el-table-column sortable :sort-orders="['ascending','descending']" label="订单状态" width="50">
+        <el-table-column sortable :sort-orders="['ascending','descending']" label="订单状态" width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.pay_status == 0">正常</span>
-            <span v-else>已过期123</span>
+            <span v-else>已过期</span>
           </template>
         </el-table-column>
         <el-table-column sortable :sort-orders="['ascending','descending']" label="支付方式" prop="order_pay" width="180">
@@ -75,16 +73,23 @@
     <!-- 添加保单对话框 -->
     <el-dialog title="添加保单" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <!-- 内容主题区域 -->
-      <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
-        <el-form-item label="投保人身份证号" prop="user_num">
+      <el-form label-width="140px" ref="addFormRef" :model="addForm" :rules="OrderaddFormRules">
+        <el-form-item label="投保人身份证号" prop="user_num" >
           <el-input v-model="addForm.user_num"></el-input>
         </el-form-item>
         <el-form-item label="被投保人身份证号" prop="seller_num">
           <el-input v-model="addForm.seller_num"></el-input>
         </el-form-item>
-        <el-form-item label="保险种类" prop="order_kind">
-          <el-input v-model="addForm.order_kind"></el-input>
-        </el-form-item>
+        <el-select v-model="selectId" placeholder="选择险种">
+          <el-option v-for="item in List" :key="item.id" :label="item.roleName" :value="item.id"> </el-option>
+        </el-select>
+<!--         级联选择器 -->
+<!--        <el-form-item label="保险种类" prop="goods_cat">-->
+<!--          <el-cascader v-model="addForm.goods_cat" :options="cateList" :props="{ expandTrigger: 'hover', ...cateProps }" @change="handleChange"></el-cascader>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="保险种类" prop="order_kind">-->
+<!--          <el-input v-model="addForm.order_kind"></el-input>-->
+<!--        </el-form-item>-->
         <el-form-item label="保险编号" prop="order_number">
           <el-input v-model="addForm.order_number"></el-input>
         </el-form-item>
@@ -109,44 +114,6 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addOrder">确 定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 修改保单信息对话框 -->
-    <el-dialog title="修改保单" @close="editClosed" :visible.sync="editDialogVisible" width="50%">
-      <!-- 内容主题区域 -->
-      <el-form label-width="70px" ref="editFormRef" :model="editForm" :rules="editFormRules">
-        <el-form-item label="投保人id" prop="user_id">
-          <el-input v-model="editForm.user_id"></el-input>
-        </el-form-item>
-        <el-form-item label="被投保人id" prop="seller_id">
-          <el-input v-model="editForm.seller_id"></el-input>
-        </el-form-item>
-        <el-form-item label="保险种类" prop="order_kind">
-          <el-input v-model="editForm.order_kind"></el-input>
-        </el-form-item>
-        <el-form-item label="保险编号" prop="order_number">
-          <el-input v-model="editForm.order_number"></el-input>
-        </el-form-item>
-        <el-form-item label="保险价格" prop="order_price">
-          <el-input v-model="editForm.order_price"></el-input>
-        </el-form-item>
-        <el-form-item label="支付方式" prop="order_pay">
-          <el-select v-model="editForm.order_pay" placeholder="请选择"  style="width: 15%;">
-            <el-option value="1" label="支付宝"></el-option>
-            <el-option value="2" label="微信"></el-option>
-            <el-option value="3" label="银行卡"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="支付状态" prop="pay_status">
-          <el-select v-model="editForm.pay_status" placeholder="请选择"  style="width: 15%;">
-            <el-option value="0" label="未支付"></el-option>
-            <el-option value="1" label="已支付"></el-option>
-          </el-select>" prop="order_pay">
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisble = false">取 消</el-button>
-        <el-button type="primary" @click="editOrderInfo">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -182,19 +149,14 @@ export default {
         order_number: '',
         order_price: '',
         order_pay: '',
-        pay_status: ''
+        pay_status: '',
+        goods_cat: ''
       },
-      editDialogVisble: false,
-      editForm: {
-        order_id: '',
-        user_id: '',
-        seller_id: '',
-        order_kind: '',
-        order_number: '',
-        order_price: '',
-        order_pay: '',
-        pay_status: ''
-      }
+      // 分配险种列表
+      List: [],
+      // 保存已经选中的险种id值
+      selectId: '',
+      editDialogVisble: false
     }
   },
   comments: {
@@ -202,8 +164,33 @@ export default {
   },
   created() {
     this.getOrderList()
+    this.getCateList()
   },
   methods: {
+    async getCateList() {
+      const { data: res } = await this.$http.get('categories')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取保险列表失败!')
+      }
+      this.cateList = res.data
+      console.log(this.cateList)
+    },
+    // 级联选择项变化触发
+    handleChange() {
+      if (this.addForm.goods_cat.length !== 3) {
+        this.addForm.goods_cat = []
+      }
+      console.log(this.addForm.goods_cat)
+    },
+    // 离开当前 Tabs 页
+    beforeTabLevae(activeName, oldActiveName) {
+      // console.log('即将离开标签页的名字: ', oldActiveName)
+      // console.log('即将进入标签页的名字: ', activeName)
+      if ((oldActiveName === '0' && this.addForm.goods_cat.length !== 3) || this.addForm.goods_name === '') {
+        this.$message.error('请先选择保险分类! 或 填写保险名称')
+        return false
+      }
+    },
     // 获取订单列表数据
     async getOrderList() {
       const { data: res } = await this.$http.get('orders', {
@@ -299,6 +286,32 @@ export default {
         this.$message.success('该保单已经删除')
         this.getOrderList()
       })
+    },
+    // 展示分配险种的对话框
+    async setRoles(userInfo) {
+      this.userInfo = userInfo
+      // 再展示对话框之前获取所有的角色列表
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色列表失败!')
+      }
+      this.rolesList = res.data
+      this.setRolesDialogVisible = true
+    },
+    // 点击按钮,分配险种
+    async saveRolesInfo() {
+      if (!this.selectRoleId) {
+        return this.$message.error('请选择要分配的角色!')
+      }
+      const { data: res } = await this.$http.put(`manager/${this.userInfo.id}/role`, {
+        rid: this.selectRoleId
+      })
+      if (res.meta.status !== 200) {
+        return this.$message.error('更新角色失败!')
+      }
+      this.$message.success('更新角色成功!')
+      this.getUserList()
+      this.setRolesDialogVisible = false
     }
   }
 }

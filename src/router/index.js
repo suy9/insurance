@@ -4,10 +4,9 @@ const Login = () => import(/* webpackChunkName: "login_home_welome" */ 'componen
 const Home = () => import(/* webpackChunkName: "login_home_welome" */ 'components/home/Home')
 const Welcome = () => import(/* webpackChunkName: "login_home_welome" */ 'components/home/welcome/Welcome')
 
-const Managers = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Managers')
-const Users = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Users')
-const Sellers = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Sellers')
-const Roles = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/power/roles/Roles')
+const Manager = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Managers')
+const Seller = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Sellers')
+const User = () => import(/* webpackChunkName: "Users_Rights_Roles" */ 'components/home/users/Users')
 
 const Cate = () => import(/* webpackChunkName: "Cate_Params" */ 'components/home/goods/cate/Cate')
 const Params = () => import(/* webpackChunkName: "Cate_Params" */ 'components/home/goods/params/Params')
@@ -39,19 +38,15 @@ const routes = [
       },
       {
         path: '/managers',
-        component: Managers
-      },
-      {
-        path: '/users',
-        component: Users
+        component: Manager
       },
       {
         path: '/sellers',
-        component: Sellers
+        component: Seller
       },
       {
-        path: '/roles',
-        component: Roles
+        path: '/users',
+        component: User
       },
       {
         path: '/categories',

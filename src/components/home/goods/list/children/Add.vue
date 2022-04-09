@@ -27,8 +27,9 @@
             </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="保险内容" name="4">
+            <el-input v-model="addForm.goods_introduce" ></el-input>
             <!-- 富文本编辑器组件 Two-way Data-Binding -->
-            <quill-editor ref="myQuillEditor" v-model="addForm.goods_introduce" />
+<!--            <quill-editor ref="myQuillEditor" v-model="addForm.goods_introduce" />-->
             <!--            添加按钮-->
             <el-button type="primary" class="AddBtn" @click="addShop">添加保险</el-button>
           </el-tab-pane>

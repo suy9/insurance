@@ -50,7 +50,7 @@
     <!-- 添加用户对话框 -->
     <el-dialog title="添加投保人" :visible.sync="addDialogVisible" width="50%" @close="addDislogClosed">
       <!-- 内容主题区域 -->
-      <el-form label-width="70px" ref="addFormRef" :model="addForm" :rules="addFormRules">
+      <el-form label-width="120px" ref="addFormRef" :model="addForm" :rules="SelleraddFormRules">
         <el-form-item label="被投保人姓名" prop="seller_name">
           <el-input v-model="addForm.seller_name"></el-input>
         </el-form-item>
@@ -59,7 +59,6 @@
             <el-option value="男" label="男"></el-option>
             <el-option value="女" label="女"></el-option>
           </el-select>
-<!--          <el-input v-model="addForm.seller_sex"></el-input>-->
         </el-form-item>
         <el-form-item label="身份证号" prop="seller_num">
           <el-input v-model="addForm.seller_num" @blur="getMES(addForm.seller_num)"></el-input>
@@ -85,14 +84,14 @@
     </el-dialog>
     <!-- 修改用户信息对话框 -->
     <el-dialog title="修改用户" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
-      <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="100px">
-        <el-form-item label="被投保人姓名" prop="seller_name">
+      <el-form :model="editForm" :rules="SelleraddFormRules" ref="editFormRef" label-width="100px">
+        <el-form-item label="投保人姓名" prop="user_name">
           <el-input v-model="editForm.seller_name" disabled></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="seller_sex">
           <el-select v-model="editForm.seller_sex" disabled placeholder="请选择"  style="width: 15%;">
-            <el-option value="男" label="男" ></el-option>
-            <el-option value="女" label="女" ></el-option>
+            <el-option value='男' label="男" ></el-option>
+            <el-option value='女' label="女" ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="身份证号" prop="seller_num">
@@ -120,10 +119,10 @@
 </template>
 
 <script>
-import { userAddFormRulesMixin } from '../../../common/mixin.js'
-import Breadcrumb from '../../../components/content/breadcrumb/Breadcrumb'
+import { userAddFormRulesMixin } from '@/common/mixin.js'
+import Breadcrumb from 'components/content/breadcrumb/Breadcrumb'
 export default {
-  name: 'Sellers',
+  name: 'Users',
   mixins: [userAddFormRulesMixin],
   data() {
     return {
@@ -150,8 +149,8 @@ export default {
         seller_num: '',
         seller_email: '',
         seller_phone: '',
-        seller_birthday: '',
-        seller_address: ''
+        seller_address: '',
+        seller_birthday: ''
       },
       // 修改用户消息对话框显示和隐藏
       editDialogVisble: false,
@@ -160,12 +159,7 @@ export default {
       // 保存已经选中的角色id值
       selectRoleId: '',
       // 查询用户的对象
-      editForm: {
-        seller_id: '',
-        seller_email: '',
-        seller_phone: '',
-        seller_address: ''
-      }
+      editForm: {}
     }
   },
   components: {
@@ -180,11 +174,12 @@ export default {
         params: this.queryInfo
       })
       if (res.meta.status !== 200) {
-        this.$message.error('获取被投保人列表失败!')
+        this.$message.error('获取被投保人列表列表失败!')
       }
-      this.$message.success('获取被投保人列表成功!')
-      this.userData.userList = res.data.sellers
+      this.$message.success('获取被投保人列表列表成功!')
+      this.userData.userList = res.data.users
       this.userData.total = res.data.total
+      // console.log(res)
     },
     // 监听 pagesize 改变事件 每页显示的个数
     handleSizeChange(newSize) {
@@ -198,16 +193,6 @@ export default {
       this.queryInfo.pagenum = newPage
       this.getUserList()
     },
-    // // 监听Switch状态的改变
-    // async userStatuChanged(userInfo) {
-    //   // console.log(userInfo)
-    //   const { data: res } = await this.$http.put(`user/${userInfo.id}/state/${userInfo.mg_state}`)
-    //   if (res.meta.status !== 200) {
-    //     userInfo.mg_state = !userInfo.mg_state
-    //     return this.$message.error('更新用户状态失败!')
-    //   }
-    //   return this.$message.success('更新用户状态成功!')
-    // },
     // 监听添加用户的对话框关闭事件
     addDislogClosed() {
       this.$refs.addFormRef.resetFields()
@@ -219,13 +204,14 @@ export default {
         if (!valid) return
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('seller', this.addForm)
+        debugger
         if (res.meta.status !== 201) {
           return this.$message.error('被投保人添加失败了~')
         }
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
         // 添加成后重新获取用户数据,不需要用户手动刷新
-        await this.getUserList()
+        this.getUserList()
         return this.$message.success('被投保人添加成功了~')
       })
     },
@@ -235,10 +221,10 @@ export default {
       let birth = null
       sex = num.substring(16, 17)
       birth = num.substring(6, 10) + '-' + num.substring(10, 12) + '-' + num.substring(12, 14)
-      if (sex % 2 === 0) {
-        this.addForm.seller_sex = '男'
+      if (sex % 2) {
+        this.addForm.seller_sex = '女'
       }
-      this.addForm.seller_sex = '女'
+      this.addForm.seller_sex = '男'
       this.addForm.seller_birthday = birth
     },
     // 展示编辑用户的对话框
@@ -248,6 +234,7 @@ export default {
         return this.$message.error('查询用户数据失败~')
       }
       this.editForm = res.data
+      console.log(res)
       this.editDialogVisble = true
       return this.$message.success('查询用户数据成功~')
     },
@@ -255,11 +242,11 @@ export default {
     aditClosed() {
       this.$refs.editFormRef.resetFields()
     },
+    // 点击按钮，编辑用户信息
     editUserInfo() {
       this.$refs.editFormRef.validate(async valid => {
+        console.log(valid)
         if (!valid) return
-        // eslint-disable-next-line no-unused-expressions
-        console.log(this.editForm)
         // 发起修改用户信息的数据请求
         const { data: res } = await this.$http.put('seller/' + this.editForm.id, {
           seller_email: this.editForm.seller_email,
@@ -271,7 +258,7 @@ export default {
           this.$message.error('更新用户信息失败!')
         }
         this.editDialogVisble = false
-        await this.getUserList()
+        this.getUserList()
         this.$message.success('更新用户信息成功!')
       })
     },

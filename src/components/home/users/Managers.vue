@@ -1,5 +1,5 @@
 <template>
-  <div class="managers">
+  <div class="users">
     <Breadcrumb name1="用户管理" name2="用户列表" />
     <!-- 卡片视图区域 -->
     <el-card class="box-card">
@@ -12,7 +12,7 @@
         </el-col>
         <el-col :span="4">
           <!-- 添加用户区域 -->
-          <el-button type="primary" @click="addDialogVisible = true">用户添加</el-button>
+          <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
         </el-col>
       </el-row>
       <!-- 用户列表 -->
@@ -22,7 +22,6 @@
         <el-table-column prop="email" label="邮箱"></el-table-column>
         <el-table-column prop="mobile" label="电话"></el-table-column>
         <el-table-column prop="role_name" label="角色"></el-table-column>
-<!--        <el-table-column prop="role_name" label="角色"></el-table-column>-->
 <!--        <el-table-column label="状态">-->
 <!--          <template v-slot="scope">-->
 <!--            <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change="userStatuChanged(scope.row)"> </el-switch>-->
@@ -78,13 +77,10 @@
       </span>
     </el-dialog>
     <!-- 修改用户信息对话框 -->
-    <el-dialog title="修改用户" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
+    <el-dialog title="修改用户信息" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
       <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="70px">
         <el-form-item label="用户名">
           <el-input v-model="editForm.username" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="editForm.password" disabled></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="editForm.email"></el-input>
@@ -102,6 +98,7 @@
     <el-dialog title="分配角色" :visible.sync="setRolesDialogVisible" @close="setRolesDialogClosed" width="50%">
       <div>
         <p>当前的用户 : {{ userInfo.username }}</p>
+        <p>当前的角色 : {{ userInfo.role_name }}</p>
         <p>
           分配新角色:
           <el-select v-model="selectRoleId" placeholder="请选择">
@@ -121,7 +118,7 @@
 import { userAddFormRulesMixin } from '@/common/mixin.js'
 import Breadcrumb from 'components/content/breadcrumb/Breadcrumb'
 export default {
-  name: 'Managers',
+  name: 'Users',
   mixins: [userAddFormRulesMixin],
   data() {
     return {
@@ -159,11 +156,7 @@ export default {
       // 保存已经选中的角色id值
       selectRoleId: '',
       // 查询用户的对象
-      editForm: {
-        id: '',
-        email: '',
-        mobile: ''
-      }
+      editForm: {}
     }
   },
   components: {
@@ -181,9 +174,8 @@ export default {
         this.$message.error('获取用户列表失败!')
       }
       this.$message.success('获取用户列表成功!')
-      this.userData.userList = res.data.managers
+      this.userData.userList = res.data.users
       this.userData.total = res.data.total
-      console.log(this.userData)
     },
     // 监听 pagesize 改变事件 每页显示的个数
     handleSizeChange(newSize) {
@@ -218,14 +210,13 @@ export default {
         if (!valid) return
         // 可以发起添加用户请求
         const { data: res } = await this.$http.post('manager', this.addForm)
-        debugger
         if (res.meta.status !== 201) {
           return this.$message.error('用户添加失败了~')
         }
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
         // 添加成后重新获取用户数据,不需要用户手动刷新
-        await this.getUserList()
+        this.getUserList()
         return this.$message.success('用户添加成功了~')
       })
     },
@@ -249,7 +240,10 @@ export default {
         console.log(valid)
         if (!valid) return
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('manager/' + this.editForm.id, this.editForm)
+        const { data: res } = await this.$http.put('manager/' + this.editForm.id, {
+          email: this.editForm.email,
+          mobile: this.editForm.mobile
+        })
         if (res.meta.status !== 200) {
           this.$message.error('更新用户信息失败!')
         }

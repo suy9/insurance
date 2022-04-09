@@ -5,6 +5,7 @@
       <div>
         <img src="~assets/logo.png" alt="" />
         <span>保险信息管理系统</span>
+        <span>{{ GetUsername }}</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
@@ -106,7 +107,7 @@ export default {
       this.$message.success(res.meta.msg)
       res.data.unshift(this.welcome)
       this.menuList = res.data
-      console.log(res, 'menus')
+      // console.log(res, 'menus')
     },
     // 点击按钮,切换菜单的折叠和展开
     toggleCollpase() {

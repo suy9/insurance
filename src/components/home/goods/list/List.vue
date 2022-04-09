@@ -5,8 +5,8 @@
       <!-- 按钮搜索/添加区域 -->
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" @clear="getGoodsList" clearable v-model="queryInfo.query">
-            <el-button slot="append" icon="el-icon-search" @click="getGoodsList"></el-button>
+          <el-input placeholder="请输入内容" @clear="getGoofsList" clearable v-model="queryInfo.query">
+            <el-button slot="append" icon="el-icon-search" @click="getGoofsList"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -49,8 +49,8 @@
       >
       </el-pagination>
     </el-card>
-<!--    修改用户对话框-->
-    <el-dialog title="修改用户信息" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
+<!--    修改保险信息对话框-->
+    <el-dialog title="修改保险信息" @close="aditClosed" :visible.sync="editDialogVisble" width="50%">
       <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="70px">
         <el-form-item label="名称">
           <el-input v-model="editForm.goods_name" disabled></el-input>
@@ -71,8 +71,8 @@
 </template>
 
 <script>
-import { userAddFormRulesMixin } from '../../../../common/mixin.js'
-import Breadcrumb from '../../../../components/content/breadcrumb/Breadcrumb'
+import { userAddFormRulesMixin } from '@/common/mixin.js'
+import Breadcrumb from 'components/content/breadcrumb/Breadcrumb'
 export default {
   name: 'List',
   components: {
@@ -101,11 +101,11 @@ export default {
     }
   },
   created() {
-    this.getGoodsList()
+    this.getGoofsList()
   },
   methods: {
     // 根据分页获取列表数据
-    async getGoodsList() {
+    async getGoofsList() {
       const { data: res } = await this.$http.get('goods', {
         params: this.queryInfo
       })
@@ -120,12 +120,12 @@ export default {
     // 显示的页数改变
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
-      this.getGoodsList()
+      this.getGoofsList()
     },
     // 页码的改变
     handleCurrentChange(newValue) {
       this.queryInfo.pagenum = newValue
-      this.getGoodsList()
+      this.getGoofsList()
     },
     async showEditDialog(id) {
       const { data: res } = await this.$http.get('goods/' + id)
@@ -133,8 +133,6 @@ export default {
         return this.$message.error('查询用户数据失败~')
       }
       this.editForm = res.data
-      console.log(res.data)
-      debugger
       this.editDialogVisble = true
       return this.$message.success('查询用户数据成功~')
     },
@@ -145,15 +143,19 @@ export default {
     // 编辑
     editGoodsInfo() {
       this.$refs.editFormRef.validate(async valid => {
+        console.log(valid)
         if (!valid) return
-        // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put('goods/' + this.editForm.goods_id, this.editForm)
-
+        // 发起修改保险信息的数据请求
+        const { data: res } = await this.$http.put('goods/' + this.editForm.goods_id, {
+          goods_price: this.editForm.goods_price,
+          goods_introduce: this.editForm.goods_introduce
+        })
+        debugger
         if (res.meta.status !== 200) {
           this.$message.error('更新保险信息失败!')
         }
         this.editDialogVisble = false
-        this.getGoodsList()
+        this.getGoofsList()
         this.$message.success('更新保险信息成功!')
       })
     },
@@ -173,7 +175,7 @@ export default {
         return this.$message.error('删除失败!')
       }
       this.$message.success('删除成功!')
-      this.getGoodsList()
+      this.getGoofsList()
     },
     goAddpage() {
       this.$router.push('goods/add')

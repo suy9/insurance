@@ -18,6 +18,15 @@ export const userAddFormRulesMixin = {
       // 返回一个错误提示
       callback(new Error('请输入合法的手机号码'))
     }
+    // 验证身份证号
+    var checkNum = (rule, value, callback) => {
+      const regNum = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+      if (regNum.test(value)) {
+        return callback()
+      }
+      // 返回一个错误提示
+      callback(new Error('请输入合法的身份证号'))
+    }
     return {
       // 添加表单的验证规则对象
       addFormRules: {
@@ -30,17 +39,78 @@ export const userAddFormRulesMixin = {
           {
             min: 6,
             max: 15,
-            message: '用户名长度在 6 到 15 个字符',
+            message: '密码长度在 6 到 15 个字符',
             trigger: 'blur'
           }
         ],
-        seller_email: [
+        email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { validator: checkEmail, trigger: 'blur' }
         ],
         mobile: [
           { required: true, message: '请输入手机', trigger: 'blur' },
           { validator: checkMobeli, trigger: 'blur' }
+        ]
+      },
+      // 添加投保人数据验证
+      UseraddFormRules: {
+        user_name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
+        user_email: [
+          { required: true, message: '请输入用户邮箱', trigger: 'blur' },
+          { validator: checkEmail, trigger: 'blur' }
+        ],
+        user_phone: [
+          { required: true, message: '请输入用户手机', trigger: 'blur' },
+          { validator: checkMobeli, trigger: 'blur' }
+        ],
+        user_num: [
+          { required: true, message: '请输入用户身份证号', trigger: 'blur' },
+          { validator: checkNum, trigger: 'blur' }
+        ]
+      },
+      // 添加被投保人数据验证规则
+      SelleraddFormRules: {
+        seller_name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
+        // seller_sex: [
+        //   { required: true, message: '请输入性别', trigger: 'blur' },
+        //   { min: 3, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        // ],
+        seller_email: [
+          { required: true, message: '请输入用户邮箱', trigger: 'blur' },
+          { validator: checkEmail, trigger: 'blur' }
+        ],
+        seller_phone: [
+          { required: true, message: '请输入用户手机', trigger: 'blur' },
+          { validator: checkMobeli, trigger: 'blur' }
+        ],
+        seller_num: [
+          { required: true, message: '请输入用户身份证号', trigger: 'blur' },
+          { validator: checkNum, trigger: 'blur' }
+        ]
+      },
+      // 添加保单数据验证规则
+      OrderaddFormRules: {
+        order_number: [
+          { required: true, message: '请输入订单号', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
+        user_num: [
+          { required: true, message: '请输入投保人身份证号码', trigger: 'blur' },
+          { validator: checkNum, trigger: 'blur' }
+        ],
+        seller_num: [
+          { required: true, message: '请输入被投保人身份证号码', trigger: 'blur' },
+          { validator: checkNum, trigger: 'blur' }
+        ],
+        order_kind: [
+          { required: true, message: '请输入保险类型', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
         ]
       },
       // 修改用户数据验证规则

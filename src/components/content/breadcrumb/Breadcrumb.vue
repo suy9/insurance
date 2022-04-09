@@ -5,6 +5,7 @@
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>{{ name1 }}</el-breadcrumb-item>
       <el-breadcrumb-item>{{ name2 }}</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ name3 }}</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
 </template>
@@ -14,7 +15,8 @@ export default {
   name: 'Breadcrumb',
   props: {
     name1: String,
-    name2: String
+    name2: String,
+    name3: String
   }
 }
 </script>

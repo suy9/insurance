@@ -43,7 +43,7 @@ Vue.component('tree-table', TreeTable)
 Vue.use(VueQuillEditor)
 // 全局时间过滤器
 Vue.filter('dataFormat', function (originVal) {
-  const dt = new Date(originVal)
+  const dt = new Date(originVal * 1000)
 
   const y = dt.getFullYear()
   const m = (dt.getMonth() + 1 + '').padStart(2, '0')
