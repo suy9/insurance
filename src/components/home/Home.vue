@@ -5,7 +5,6 @@
       <div>
         <img src="~assets/logo.png" alt="" />
         <span>保险信息管理系统</span>
-        <span>{{ GetUsername }}</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
