@@ -5,13 +5,24 @@
     <el-card class="box-card">
       <el-row :gutter="20">
         <el-col :span="4">
-          <el-button type="primary" @click="getoneday">查询一天之内的信息</el-button>
+          <el-button type="primary" @click="getoneday">查询一天之内的保单信息</el-button>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="getoneweek">查询一周之内的信息</el-button>
+          <el-button type="primary" @click="getoneweek">查询一周之内保单的信息</el-button>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="getoneyear">查询一年之内的信息</el-button>
+          <el-button type="primary" @click="getoneyear">查询一年之内保单的信息</el-button>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <el-button type="primary" @click="getoneday">查询一天之内的保单信息</el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="primary" @click="getoneweek">查询一周之内保单的信息</el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="primary" @click="getoneyear">查询一年之内保单的信息</el-button>
         </el-col>
       </el-row>
       <!-- 数据列表 -->

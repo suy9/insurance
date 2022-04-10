@@ -179,7 +179,6 @@ export default {
       this.$message.success('获取投保人列表成功!')
       this.userData.userList = res.data.users
       this.userData.total = res.data.total
-      // console.log(res)
     },
     // 监听 pagesize 改变事件 每页显示的个数
     handleSizeChange(newSize) {
@@ -228,6 +227,7 @@ export default {
     },
     // 展示编辑用户的对话框
     async showEditDialog(id) {
+      console.log(id)
       const { data: res } = await this.$http.get('user/' + id)
       if (res.meta.status !== 200) {
         return this.$message.error('查询用户数据失败~')
@@ -257,7 +257,7 @@ export default {
           this.$message.error('更新用户信息失败!')
         }
         this.editDialogVisble = false
-        this.getUserList()
+        await this.getUserList()
         this.$message.success('更新用户信息成功!')
       })
     },

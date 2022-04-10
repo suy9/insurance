@@ -76,6 +76,10 @@ export default {
       userData: {
         userList: [],
         total: 0
+      },
+      updateData: {
+        userList: [],
+        total: 0
       }
     }
   },
@@ -91,8 +95,6 @@ export default {
       const { data: res } = await this.$http.get('renewal', {
         params: this.queryInfo
       })
-      console.log(res.data)
-      debugger
       if (res.meta.status !== 200) {
         return this.$message.error('获取订单列表失败!')
       }
@@ -135,26 +137,28 @@ export default {
     },
     // 是否续期
     async updateUserById(id) {
-      // 询问用户是否删除用户
       const confirmRusult = await this.$confirm('是否续期保单（续期时长为一年）?', '续期保单', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).catch(err => err)
-      console.log(confirmRusult)
       if (confirmRusult !== 'confirm') {
         return this.$message.info('取消续期')
       }
-      this.$http.put('renewal/' + id).then(res => {
-        const { data: response } = res
-        console.log(response)
-        debugger
-        if (response.meta.status !== 200) {
-          return this.$message.error('续期失败')
-        }
-        this.$message.success('续期成功')
-        this.getRenewalList()
+      const { data: tmp } = await this.$http.get('renewal/' + id)
+      if (tmp.meta.status !== 200) {
+        return this.$message.error('查询用户数据失败~')
+      }
+      this.editForm = tmp.data
+      const { data: res } = await this.$http.put('renewal/' + this.editForm.id, {
+        id: this.editForm.id,
+        next_pay_time: this.editForm.next_pay_time
       })
+      if (res.meta.status !== 200) {
+        return this.$message.error('续期失败')
+      }
+      this.$message.success('续期成功')
+      await this.getRenewalList()
     }
   }
 }
