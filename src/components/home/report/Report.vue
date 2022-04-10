@@ -5,24 +5,30 @@
     <el-card class="box-card">
       <el-row :gutter="20">
         <el-col :span="4">
-          <el-button type="primary" @click="getoneday">查询一天之内的保单信息</el-button>
+          <el-button type="primary" @click="getusertodaybir">查询今天生日的的投保人信息</el-button>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="getoneweek">查询一周之内保单的信息</el-button>
+          <el-button type="primary" @click="getusertombir">查询明天生日的投保人的信息</el-button>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="getoneyear">查询一年之内保单的信息</el-button>
+          <el-button type="primary" @click="getusermonthbir">查询本月生日的投保人的信息</el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="primary" @click="getusernexmonthbir">查询下月生日的投保人的信息</el-button>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="4">
-          <el-button type="primary" @click="getoneday">查询一天之内的保单信息</el-button>
+          <el-button type="primary" @click="getsellertodaybir">查询今天生日的的被投保人信息</el-button>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="getoneweek">查询一周之内保单的信息</el-button>
+          <el-button type="primary" @click="getsellertombir">查询明天生日的被投保人的信息</el-button>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="getoneyear">查询一年之内保单的信息</el-button>
+          <el-button type="primary" @click="getsellermonthbir">查询本月生日的被投保人的信息</el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="primary" @click="getsellernexmonthbir">查询下月生日的被投保人的信息</el-button>
         </el-col>
       </el-row>
       <!-- 数据列表 -->
@@ -73,62 +79,6 @@ export default {
   data() {
     moment().format('YYYY-MM-DD')
     return {
-      // 日期选择器
-      pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      },
-      // 日期选择器
-      pickerOptions2: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      },
       reportData: {
         reportList: [],
         total: 0
@@ -145,55 +95,126 @@ export default {
     }
   },
   methods: {
-    async getoneday() {
+    async getusertodaybir() {
       const { data: res } = await this.$http.get('reports', {
         params: {
-          startDate: moment().subtract(1, 'days').format('YYYY-MM-DD'),
-          endDate: moment().format('YYYY-MM-DD'),
+          query: 'user_birthday',
+          startDate: moment().subtract(1, 'days').format('MM-DD'),
+          endDate: moment().format('MM-DD'),
           pagenum: 1,
           pagesize: 5
         }
       })
-      console.log(res.data)
-      debugger
       if (res.meta.status !== 200) return this.$message.error('获取信息列表失败!')
       this.$message.success('获取信息列表成功!')
       this.reportData.reportList = res.data.reports
       this.reportData.total = res.data.total
     },
-    async getoneweek() {
+    async getusertombir() {
       const { data: res } = await this.$http.get('reports', {
         params: {
-          startDate: moment().subtract(1, 'weeks').format('YYYY-MM-DD'),
-          endDate: moment().format('YYYY-MM-DD'),
+          query: 'user_birthday',
+          startDate: moment().format('MM-DD'),
+          endDate: moment().subtract(-1, 'days').format('MM-DD'),
           pagenum: 1,
           pagesize: 5
         }
       })
-      console.log(res.data)
-      debugger
       if (res.meta.status !== 200) return this.$message.error('获取信息列表失败!')
       this.$message.success('获取信息列表成功!')
       this.reportData.reportList = res.data.reports
       this.reportData.total = res.data.total
     },
-    async getoneyear() {
+    async getusermonthbir() {
       const { data: res } = await this.$http.get('reports', {
         params: {
-          startDate: moment().subtract(1, 'years').format('YYYY-MM-DD'),
-          endDate: moment().format('YYYY-MM-DD'),
+          query: 'user_birthday',
+          startDate: moment().subtract(1, 'months').format('MM-DD'),
+          endDate: moment().format('MM-DD'),
           pagenum: 1,
           pagesize: 5
         }
       })
-      console.log(res.data)
-      debugger
+      if (res.meta.status !== 200) return this.$message.error('获取信息列表失败!')
+      this.$message.success('获取信息列表成功!')
+      this.reportData.reportList = res.data.reports
+      this.reportData.total = res.data.total
+    },
+    async getusernexmonthbir() {
+      const { data: res } = await this.$http.get('reports', {
+        params: {
+          query: 'user_birthday',
+          startDate: moment().format('MM-DD'),
+          endDate: moment().subtract(-3, 'months').format('MM-DD'),
+          pagenum: 1,
+          pagesize: 5
+        }
+      })
+      if (res.meta.status !== 200) return this.$message.error('获取信息列表失败!')
+      this.$message.success('获取信息列表成功!')
+      this.reportData.reportList = res.data.reports
+      this.reportData.total = res.data.total
+    },
+    async getsellertodaybir() {
+      const { data: res } = await this.$http.get('reports', {
+        params: {
+          query: 'user_birthday',
+          startDate: moment().subtract(1, 'days').format('MM-DD'),
+          endDate: moment().format('MM-DD'),
+          pagenum: 1,
+          pagesize: 5
+        }
+      })
+      if (res.meta.status !== 200) return this.$message.error('获取信息列表失败!')
+      this.$message.success('获取信息列表成功!')
+      this.reportData.reportList = res.data.reports
+      this.reportData.total = res.data.total
+    },
+    async getsellertombir() {
+      const { data: res } = await this.$http.get('reports', {
+        params: {
+          query: 'user_birthday',
+          startDate: moment().format('MM-DD'),
+          endDate: moment().subtract(-1, 'days').format('MM-DD'),
+          pagenum: 1,
+          pagesize: 5
+        }
+      })
+      if (res.meta.status !== 200) return this.$message.error('获取信息列表失败!')
+      this.$message.success('获取信息列表成功!')
+      this.reportData.reportList = res.data.reports
+      this.reportData.total = res.data.total
+    },
+    async getsellermonthbir() {
+      const { data: res } = await this.$http.get('reports', {
+        params: {
+          query: 'user_birthday',
+          startDate: moment().subtract(1, 'months').format('MM-DD'),
+          endDate: moment().format('MM-DD'),
+          pagenum: 1,
+          pagesize: 5
+        }
+      })
+      if (res.meta.status !== 200) return this.$message.error('获取信息列表失败!')
+      this.$message.success('获取信息列表成功!')
+      this.reportData.reportList = res.data.reports
+      this.reportData.total = res.data.total
+    },
+    async getsellernexmonthbir() {
+      const { data: res } = await this.$http.get('reports', {
+        params: {
+          query: 'user_birthday',
+          startDate: moment().format('MM-DD'),
+          endDate: moment().subtract(-3, 'months').format('MM-DD'),
+          pagenum: 1,
+          pagesize: 5
+        }
+      })
       if (res.meta.status !== 200) return this.$message.error('获取信息列表失败!')
       this.$message.success('获取信息列表成功!')
       this.reportData.reportList = res.data.reports
       this.reportData.total = res.data.total
     }
-
   }
 }
 </script>

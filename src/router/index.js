@@ -16,7 +16,9 @@ const Add = () => import(/* webpackChunkName: "GoodsList_Add" */ 'components/hom
 
 const Order = () => import(/* webpackChunkName: "Order_Report" */ 'components/home/order/Order')
 const Renewal = () => import(/* webpackChunkName: "Order_Report" */ 'components/home/order/Renewal')
+
 const Report = () => import(/* webpackChunkName: "Order_Report" */ 'components/home/report/Report')
+const Totalorder = () => import(/* webpackChunkName: "Order_Report" */ 'components/home/report/Totalorder')
 Vue.use(VueRouter)
 
 const routes = [
@@ -76,6 +78,10 @@ const routes = [
       {
         path: '/reports',
         component: Report
+      },
+      {
+        path: '/totalorders',
+        component: Totalorder
       }
     ]
   }
